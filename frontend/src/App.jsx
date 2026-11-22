@@ -44,7 +44,9 @@ import {
   Eye,
   FileText,
   Activity,
-  ArrowRight
+  ArrowRight,
+  Menu,
+  X
 } from 'lucide-react';
 
 // Authentic default dataset representing System A vs System B discrepancies
@@ -209,7 +211,19 @@ const PREVIEW_DATA_ORG_B = {
 
 export default function App() {
   const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' | 'reconciliation' | 'system_a' | 'system_b' | 'inbox' | 'calendar' | 'reports' | 'portfolio' | 'settings'
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState('ORG-A');
+
+  const navigateTo = (view) => {
+    setCurrentView(view);
+    setMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const changeOrg = (org) => {
+    setSelectedOrg(org);
+    setMobileMenuOpen(false);
+  };
   const [activeTab, setActiveTab] = useState('Overview');
   const [reasonFilter, setReasonFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -404,16 +418,33 @@ export default function App() {
 
   return (
     <div className="taskbito-layout">
+      {/* Mobile Backdrop Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="sidebar-backdrop" 
+          onClick={() => setMobileMenuOpen(false)} 
+        />
+      )}
+
       {/* 1. LEFT SIDEBAR */}
-      <aside className="taskbito-sidebar">
+      <aside className={`taskbito-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         {/* Brand / Logo */}
-        <div className="sidebar-brand" onClick={() => setCurrentView('dashboard')}>
-          <div className="brand-icon-box">
-            <LayoutDashboard size={20} color="#FFFFFF" />
+        <div className="sidebar-brand">
+          <div className="sidebar-brand-inner" onClick={() => navigateTo('dashboard')}>
+            <div className="brand-icon-box">
+              <LayoutDashboard size={20} color="#FFFFFF" />
+            </div>
+            <div className="brand-text-wrap">
+              <span className="brand-title">DealerOS</span>
+            </div>
           </div>
-          <div className="brand-text-wrap">
-            <span className="brand-title">DealerOS</span>
-          </div>
+          <button 
+            className="sidebar-close-btn" 
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close sidebar"
+          >
+            <X size={18} />
+          </button>
           <ChevronDown size={16} className="brand-arrow" />
         </div>
 
@@ -421,7 +452,7 @@ export default function App() {
         <nav className="sidebar-nav">
           <div 
             className={`nav-item ${currentView === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setCurrentView('dashboard')}
+            onClick={() => navigateTo('dashboard')}
           >
             <LayoutDashboard size={18} />
             <span>Dashboard</span>
@@ -430,7 +461,7 @@ export default function App() {
 
           <div 
             className={`nav-item ${currentView === 'reconciliation' ? 'active' : ''}`}
-            onClick={() => setCurrentView('reconciliation')}
+            onClick={() => navigateTo('reconciliation')}
           >
             <CheckSquare size={18} />
             <span>Reconciliation</span>
@@ -438,7 +469,7 @@ export default function App() {
 
           <div 
             className={`nav-item ${currentView === 'inbox' ? 'active' : ''}`}
-            onClick={() => setCurrentView('inbox')}
+            onClick={() => navigateTo('inbox')}
           >
             <Inbox size={18} />
             <span>Inbox</span>
@@ -449,7 +480,7 @@ export default function App() {
 
           <div 
             className={`nav-item ${currentView === 'calendar' ? 'active' : ''}`}
-            onClick={() => setCurrentView('calendar')}
+            onClick={() => navigateTo('calendar')}
           >
             <CalendarIcon size={18} />
             <span>Calendar</span>
@@ -457,7 +488,7 @@ export default function App() {
 
           <div 
             className={`nav-item ${currentView === 'reports' ? 'active' : ''}`}
-            onClick={() => setCurrentView('reports')}
+            onClick={() => navigateTo('reports')}
           >
             <BarChart2 size={18} />
             <span>Reports</span>
@@ -465,7 +496,7 @@ export default function App() {
 
           <div 
             className={`nav-item ${currentView === 'portfolio' ? 'active' : ''}`}
-            onClick={() => setCurrentView('portfolio')}
+            onClick={() => navigateTo('portfolio')}
           >
             <Briefcase size={18} />
             <span>Portfolio</span>
@@ -480,14 +511,14 @@ export default function App() {
           </div>
           <div 
             className={`section-item ${selectedOrg === 'ORG-A' ? 'selected' : ''}`}
-            onClick={() => setSelectedOrg('ORG-A')}
+            onClick={() => changeOrg('ORG-A')}
           >
             <span className="dot dot-cyan" />
             <span>ORG-A (LOC-101..103)</span>
           </div>
           <div 
             className={`section-item ${selectedOrg === 'ORG-B' ? 'selected' : ''}`}
-            onClick={() => setSelectedOrg('ORG-B')}
+            onClick={() => changeOrg('ORG-B')}
           >
             <span className="dot dot-purple" />
             <span>ORG-B (LOC-201..202)</span>
@@ -502,14 +533,14 @@ export default function App() {
           </div>
           <div 
             className={`section-item ${currentView === 'system_a' ? 'selected' : ''}`}
-            onClick={() => setCurrentView('system_a')}
+            onClick={() => navigateTo('system_a')}
           >
             <span className="dot dot-orange" />
             <span>System A (120 Records)</span>
           </div>
           <div 
             className={`section-item ${currentView === 'system_b' ? 'selected' : ''}`}
-            onClick={() => setCurrentView('system_b')}
+            onClick={() => navigateTo('system_b')}
           >
             <span className="dot dot-magenta" />
             <span>System B (121 Entries)</span>
@@ -518,17 +549,17 @@ export default function App() {
 
         {/* Bottom Sidebar Tools */}
         <div className="sidebar-footer">
-          <div className="footer-item" onClick={() => setCurrentView('inbox')}>
+          <div className="footer-item" onClick={() => navigateTo('inbox')}>
             <UserPlus size={16} />
             <span>Invite Auditor</span>
           </div>
-          <div className="footer-item" onClick={() => setCurrentView('reports')}>
+          <div className="footer-item" onClick={() => navigateTo('reports')}>
             <HelpCircle size={16} />
             <span>Rules & Specs</span>
           </div>
           <div 
             className={`footer-item ${currentView === 'settings' ? 'active' : ''}`}
-            onClick={() => setCurrentView('settings')}
+            onClick={() => navigateTo('settings')}
           >
             <SettingsIcon size={16} />
             <span>Settings</span>
@@ -540,6 +571,51 @@ export default function App() {
       <div className="taskbito-main">
         {/* Top Header */}
         <header className="taskbito-header">
+          <div className="header-top-row">
+            <div className="header-left-cluster">
+              <button 
+                className="mobile-menu-btn" 
+                onClick={() => setMobileMenuOpen(prev => !prev)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+              <div className="mobile-brand-title" onClick={() => navigateTo('dashboard')}>
+                <div className="brand-icon-box sm">
+                  <LayoutDashboard size={15} color="#FFFFFF" />
+                </div>
+                <span>DealerOS</span>
+              </div>
+            </div>
+
+            <div className="header-actions">
+              <button className="icon-btn" title="AI Verification Active">
+                <Sparkles size={16} color="#5D5FEF" />
+              </button>
+              <button 
+                className="icon-btn relative-btn" 
+                title="Notifications"
+                onClick={() => navigateTo('inbox')}
+              >
+                <Bell size={16} />
+                {inboxItems.filter(i => !i.read).length > 0 && <span className="unread-dot" />}
+              </button>
+              <button className="integrate-btn" onClick={() => navigateTo('settings')}>
+                <Layers size={14} />
+                <span>Integrate</span>
+              </button>
+
+              <div className="user-profile" onClick={() => navigateTo('settings')}>
+                <img 
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" 
+                  alt="Auditor" 
+                  className="user-avatar"
+                />
+                <ChevronDown size={14} className="user-arrow" />
+              </div>
+            </div>
+          </div>
+
           <div className="header-search">
             <Search size={16} className="search-icon" />
             <input 
@@ -549,33 +625,6 @@ export default function App() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <span className="search-badge">⌘ 1</span>
-          </div>
-
-          <div className="header-actions">
-            <button className="icon-btn" title="AI Verification Active">
-              <Sparkles size={16} color="#5D5FEF" />
-            </button>
-            <button 
-              className="icon-btn relative-btn" 
-              title="Notifications"
-              onClick={() => setCurrentView('inbox')}
-            >
-              <Bell size={16} />
-              {inboxItems.filter(i => !i.read).length > 0 && <span className="unread-dot" />}
-            </button>
-            <button className="integrate-btn" onClick={() => setCurrentView('settings')}>
-              <Layers size={14} />
-              <span>Integrate</span>
-            </button>
-
-            <div className="user-profile">
-              <img 
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" 
-                alt="Auditor" 
-                className="user-avatar"
-              />
-              <ChevronDown size={14} className="user-arrow" />
-            </div>
           </div>
         </header>
 
@@ -1870,6 +1919,45 @@ export default function App() {
           )}
         </div>
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="mobile-bottom-nav">
+        <button 
+          className={`mobile-nav-btn ${currentView === 'dashboard' ? 'active' : ''}`}
+          onClick={() => navigateTo('dashboard')}
+        >
+          <LayoutDashboard size={18} />
+          <span>Dashboard</span>
+        </button>
+        <button 
+          className={`mobile-nav-btn ${currentView === 'reconciliation' ? 'active' : ''}`}
+          onClick={() => navigateTo('reconciliation')}
+        >
+          <CheckSquare size={18} />
+          <span>Reconcile</span>
+        </button>
+        <button 
+          className={`mobile-nav-btn ${currentView === 'system_a' ? 'active' : ''}`}
+          onClick={() => navigateTo('system_a')}
+        >
+          <Database size={18} />
+          <span>System A</span>
+        </button>
+        <button 
+          className={`mobile-nav-btn ${currentView === 'system_b' ? 'active' : ''}`}
+          onClick={() => navigateTo('system_b')}
+        >
+          <Layers size={18} />
+          <span>System B</span>
+        </button>
+        <button 
+          className={`mobile-nav-btn ${mobileMenuOpen ? 'active' : ''}`}
+          onClick={() => setMobileMenuOpen(prev => !prev)}
+        >
+          <Menu size={18} />
+          <span>Menu</span>
+        </button>
+      </nav>
     </div>
   );
 }
