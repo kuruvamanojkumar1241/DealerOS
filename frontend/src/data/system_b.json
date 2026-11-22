@@ -1,0 +1,970 @@
+[
+    {
+        "entry_id":  "ENT/2026/4001",
+        "record_ref":  "REC-1001",
+        "location_id":  "LOC-201",
+        "recorded_on":  "03-04-2026",
+        "value":  "88969.92",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4002",
+        "record_ref":  "REC-1002",
+        "location_id":  "LOC-102",
+        "recorded_on":  "24-03-2026",
+        "value":  "37878.21",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4003",
+        "record_ref":  "REC-1003",
+        "location_id":  "LOC-202",
+        "recorded_on":  "04-03-2026",
+        "value":  "94834.38",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4004",
+        "record_ref":  "REC-1004",
+        "location_id":  "LOC-101",
+        "recorded_on":  "20-03-2026",
+        "value":  "156337.55",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4005",
+        "record_ref":  "REC-1005",
+        "location_id":  "LOC-202",
+        "recorded_on":  "05-03-2026",
+        "value":  "97970.3",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4006",
+        "record_ref":  "REC-1006",
+        "location_id":  "LOC-101",
+        "recorded_on":  "08-04-2026",
+        "value":  "33459.29",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4007",
+        "record_ref":  "REC-1007",
+        "location_id":  "LOC-101",
+        "recorded_on":  "06-03-2026",
+        "value":  "158846.48",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4008",
+        "record_ref":  "REC-1008",
+        "location_id":  "LOC-103",
+        "recorded_on":  "18-03-2026",
+        "value":  "75516.62",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4009",
+        "record_ref":  "REC-1009",
+        "location_id":  "LOC-201",
+        "recorded_on":  "02-04-2026",
+        "value":  "111699.3",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4010",
+        "record_ref":  "REC-1010",
+        "location_id":  "LOC-202",
+        "recorded_on":  "01-03-2026",
+        "value":  "158677.04",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4011",
+        "record_ref":  "REC-1011",
+        "location_id":  "LOC-102",
+        "recorded_on":  "17-03-2026",
+        "value":  "121197.25",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4012",
+        "record_ref":  "REC-1012",
+        "location_id":  "LOC-101",
+        "recorded_on":  "16-03-2026",
+        "value":  "136305.2",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4013",
+        "record_ref":  "REC-1013",
+        "location_id":  "LOC-103",
+        "recorded_on":  "27-03-2026",
+        "value":  "58349.5",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4014",
+        "record_ref":  "REC-1014",
+        "location_id":  "LOC-103",
+        "recorded_on":  "26-03-2026",
+        "value":  "55752.45",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4016",
+        "record_ref":  "REC-1016",
+        "location_id":  "LOC-202",
+        "recorded_on":  "06-03-2026",
+        "value":  "54489.09",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4017",
+        "record_ref":  "REC-1017",
+        "location_id":  "LOC-201",
+        "recorded_on":  "03-04-2026",
+        "value":  "152174.49",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4018",
+        "record_ref":  "REC-1018",
+        "location_id":  "LOC-103",
+        "recorded_on":  "04-03-2026",
+        "value":  "79650.32",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4019",
+        "record_ref":  "REC-1019",
+        "location_id":  "LOC-202",
+        "recorded_on":  "05-04-2026",
+        "value":  "57092.35",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4020",
+        "record_ref":  "REC-1020",
+        "location_id":  "LOC-102",
+        "recorded_on":  "16-03-2026",
+        "value":  "180421.27",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4021",
+        "record_ref":  "REC-1021",
+        "location_id":  "LOC-103",
+        "recorded_on":  "27-03-2026",
+        "value":  "96229.44",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4022",
+        "record_ref":  "REC-1022",
+        "location_id":  "LOC-103",
+        "recorded_on":  "01-03-2026",
+        "value":  "114144.51",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4023",
+        "record_ref":  "REC-1023",
+        "location_id":  "LOC-103",
+        "recorded_on":  "22-03-2026",
+        "value":  "115951.94",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4024",
+        "record_ref":  "REC-1024",
+        "location_id":  "LOC-202",
+        "recorded_on":  "25-03-2026",
+        "value":  "17088.03",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4025",
+        "record_ref":  "REC-1025",
+        "location_id":  "LOC-202",
+        "recorded_on":  "03-04-2026",
+        "value":  "127529.68",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4026",
+        "record_ref":  "REC-1026",
+        "location_id":  "LOC-103",
+        "recorded_on":  "23-03-2026",
+        "value":  "12958.85",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4027",
+        "record_ref":  "REC-1027",
+        "location_id":  "LOC-102",
+        "recorded_on":  "14-03-2026",
+        "value":  "61921.12",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4028",
+        "record_ref":  "REC-1028",
+        "location_id":  "LOC-103",
+        "recorded_on":  "25-03-2026",
+        "value":  "177163.23",
+        "label":  "Entry for CAT-08"
+    },
+    {
+        "entry_id":  "ENT/2026/4029",
+        "record_ref":  "REC-1029",
+        "location_id":  "LOC-103",
+        "recorded_on":  "31-03-2026",
+        "value":  "165452.83",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4030",
+        "record_ref":  "REC-1030",
+        "location_id":  "LOC-101",
+        "recorded_on":  "19-03-2026",
+        "value":  "9084.2",
+        "label":  "Entry for CAT-08"
+    },
+    {
+        "entry_id":  "ENT/2026/4031",
+        "record_ref":  "REC-1031",
+        "location_id":  "LOC-202",
+        "recorded_on":  "13-03-2026",
+        "value":  "134509.86",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4032",
+        "record_ref":  "REC-1032",
+        "location_id":  "LOC-101",
+        "recorded_on":  "19-03-2026",
+        "value":  "105239.94",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4033",
+        "record_ref":  "REC-1033",
+        "location_id":  "LOC-101",
+        "recorded_on":  "04-03-2026",
+        "value":  "167851.61",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4034",
+        "record_ref":  "rec1034",
+        "location_id":  "LOC-101",
+        "recorded_on":  "22-03-2026",
+        "value":  "84939.99",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4035",
+        "record_ref":  "REC-1035",
+        "location_id":  "LOC-202",
+        "recorded_on":  "10-04-2026",
+        "value":  "34692.38",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4036",
+        "record_ref":  "REC-1036",
+        "location_id":  "LOC-202",
+        "recorded_on":  "25-03-2026",
+        "value":  "100113.23",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4037",
+        "record_ref":  "REC-1037",
+        "location_id":  "LOC-102",
+        "recorded_on":  "07-04-2026",
+        "value":  "82485.81",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4038",
+        "record_ref":  "REC-1038",
+        "location_id":  "LOC-103",
+        "recorded_on":  "16-03-2026",
+        "value":  "82134.49",
+        "label":  "Entry for CAT-08"
+    },
+    {
+        "entry_id":  "ENT/2026/4039",
+        "record_ref":  "REC-1039",
+        "location_id":  "LOC-201",
+        "recorded_on":  "03-04-2026",
+        "value":  "109212.74",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4040",
+        "record_ref":  "REC-1040",
+        "location_id":  "LOC-201",
+        "recorded_on":  "14-03-2026",
+        "value":  "43992.69",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4041",
+        "record_ref":  "REC-1041",
+        "location_id":  "LOC-102",
+        "recorded_on":  "08-04-2026",
+        "value":  "184503.73",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4042",
+        "record_ref":  "REC-1042",
+        "location_id":  "LOC-101",
+        "recorded_on":  "04-03-2026",
+        "value":  "112837.06",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4043",
+        "record_ref":  "REC-1043",
+        "location_id":  "LOC-102",
+        "recorded_on":  "13-03-2026",
+        "value":  "81119.18",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4044",
+        "record_ref":  "REC-1044",
+        "location_id":  "LOC-102",
+        "recorded_on":  "09-03-2026",
+        "value":  "130896.32",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4045",
+        "record_ref":  "REC-1045",
+        "location_id":  "LOC-102",
+        "recorded_on":  "18-03-2026",
+        "value":  "30080.81",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4046",
+        "record_ref":  "REC-1046",
+        "location_id":  "LOC-102",
+        "recorded_on":  "21-03-2026",
+        "value":  "88033.65",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4047",
+        "record_ref":  "REC-1047",
+        "location_id":  "LOC-201",
+        "recorded_on":  "13-03-2026",
+        "value":  "154995.84",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4048",
+        "record_ref":  "REC-1048",
+        "location_id":  "LOC-103",
+        "recorded_on":  "03-03-2026",
+        "value":  "21235.98",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4049",
+        "record_ref":  "REC-1049",
+        "location_id":  "LOC-201",
+        "recorded_on":  "03-04-2026",
+        "value":  "129752.04",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4050",
+        "record_ref":  "REC-1050",
+        "location_id":  "LOC-202",
+        "recorded_on":  "20-03-2026",
+        "value":  "",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4051",
+        "record_ref":  "REC-1051",
+        "location_id":  "LOC-202",
+        "recorded_on":  "12-03-2026",
+        "value":  "15429.94",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4052",
+        "record_ref":  "REC-1052",
+        "location_id":  "LOC-102",
+        "recorded_on":  "23-03-2026",
+        "value":  "183955.84",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4053",
+        "record_ref":  "REC-1053",
+        "location_id":  "LOC-102",
+        "recorded_on":  "17-03-2026",
+        "value":  "141866.7",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4054",
+        "record_ref":  "REC-1054",
+        "location_id":  "LOC-101",
+        "recorded_on":  "04-03-2026",
+        "value":  "134160.41",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4055",
+        "record_ref":  "REC-1055",
+        "location_id":  "LOC-103",
+        "recorded_on":  "14-03-2026",
+        "value":  "71950.93",
+        "label":  "Entry for CAT-08"
+    },
+    {
+        "entry_id":  "ENT/2026/4056",
+        "record_ref":  "REC-1056",
+        "location_id":  "LOC-102",
+        "recorded_on":  "11-03-2026",
+        "value":  "147295.56",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4057",
+        "record_ref":  "REC-1057",
+        "location_id":  "LOC-201",
+        "recorded_on":  "21-03-2026",
+        "value":  "177866.39",
+        "label":  "Entry for CAT-08"
+    },
+    {
+        "entry_id":  "ENT/2026/4058",
+        "record_ref":  "REC-1058",
+        "location_id":  "LOC-101",
+        "recorded_on":  "02-03-2026",
+        "value":  "39731.94",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4059",
+        "record_ref":  "REC-1059",
+        "location_id":  "LOC-102",
+        "recorded_on":  "03-03-2026",
+        "value":  "140002.62",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4060",
+        "record_ref":  "REC-1060",
+        "location_id":  "LOC-202",
+        "recorded_on":  "01-03-2026",
+        "value":  "44419.07",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4062",
+        "record_ref":  "REC-1062",
+        "location_id":  "LOC-202",
+        "recorded_on":  "22-03-2026",
+        "value":  "63243.29",
+        "label":  "Entry for CAT-08"
+    },
+    {
+        "entry_id":  "ENT/2026/4063",
+        "record_ref":  "REC-1063",
+        "location_id":  "LOC-102",
+        "recorded_on":  "06-04-2026",
+        "value":  "47214.17",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4064",
+        "record_ref":  "REC-1064",
+        "location_id":  "LOC-101",
+        "recorded_on":  "03-04-2026",
+        "value":  "1,25,400.00",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4065",
+        "record_ref":  "REC-1065",
+        "location_id":  "LOC-201",
+        "recorded_on":  "28-03-2026",
+        "value":  "179657.43",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4066",
+        "record_ref":  "REC-1066",
+        "location_id":  "LOC-101",
+        "recorded_on":  "06-03-2026",
+        "value":  "95173.77",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4067",
+        "record_ref":  "REC-1067",
+        "location_id":  "LOC-103",
+        "recorded_on":  "25-03-2026",
+        "value":  "158854.17",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4068",
+        "record_ref":  "REC-1068",
+        "location_id":  "LOC-101",
+        "recorded_on":  "01-03-2026",
+        "value":  "45387",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4069",
+        "record_ref":  "REC-1069",
+        "location_id":  "LOC-202",
+        "recorded_on":  "13-03-2026",
+        "value":  "109220.51",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4070",
+        "record_ref":  "REC - 1070 ",
+        "location_id":  "LOC-202",
+        "recorded_on":  "18-03-2026",
+        "value":  "1608.95",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4071",
+        "record_ref":  "REC-1071",
+        "location_id":  "LOC-102",
+        "recorded_on":  "05-03-2026",
+        "value":  "66826.64",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4072",
+        "record_ref":  "REC-1072",
+        "location_id":  "LOC-103",
+        "recorded_on":  "29-03-2026",
+        "value":  "71617.64",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4073",
+        "record_ref":  "REC-1073",
+        "location_id":  "LOC-202",
+        "recorded_on":  "13-03-2026",
+        "value":  "146052.17",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4074",
+        "record_ref":  "REC-1074",
+        "location_id":  "LOC-103",
+        "recorded_on":  "07-03-2026",
+        "value":  "161483.83",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4075",
+        "record_ref":  "REC-1075",
+        "location_id":  "LOC-201",
+        "recorded_on":  "07-03-2026",
+        "value":  "99760.7",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4076",
+        "record_ref":  "REC-1076",
+        "location_id":  "LOC-103",
+        "recorded_on":  "08-04-2026",
+        "value":  "115630.03",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4077",
+        "record_ref":  "REC-1077",
+        "location_id":  "LOC-201",
+        "recorded_on":  "19-03-2026",
+        "value":  "83361.4",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4078",
+        "record_ref":  "REC-1078",
+        "location_id":  "LOC-103",
+        "recorded_on":  "25-03-2026",
+        "value":  "96339.8",
+        "label":  "Entry for CAT-08"
+    },
+    {
+        "entry_id":  "ENT/2026/4079",
+        "record_ref":  "REC-1079",
+        "location_id":  "LOC-103",
+        "recorded_on":  "08-03-2026",
+        "value":  "89723.72",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4080",
+        "record_ref":  "REC-1080",
+        "location_id":  "LOC-103",
+        "recorded_on":  "13-03-2026",
+        "value":  "88023.69",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4081",
+        "record_ref":  "REC-1081",
+        "location_id":  "LOC-201",
+        "recorded_on":  "01-04-2026",
+        "value":  "63360.37",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4082",
+        "record_ref":  "REC-1082",
+        "location_id":  "LOC-201",
+        "recorded_on":  "31-03-2026",
+        "value":  "51772.47",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4083",
+        "record_ref":  "REC-1083",
+        "location_id":  "LOC-103",
+        "recorded_on":  "23-03-2026",
+        "value":  "156220.06",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4084",
+        "record_ref":  "REC-1084",
+        "location_id":  "LOC-103",
+        "recorded_on":  "09-03-2026",
+        "value":  "67519.37",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4085",
+        "record_ref":  "REC-1085",
+        "location_id":  "LOC-101",
+        "recorded_on":  "02-03-2026",
+        "value":  "110270.87",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4086",
+        "record_ref":  "REC-1086",
+        "location_id":  "LOC-202",
+        "recorded_on":  "13-03-2026",
+        "value":  "155372.61",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4087",
+        "record_ref":  "REC-1087",
+        "location_id":  "LOC-102",
+        "recorded_on":  "03-04-2026",
+        "value":  "114149.26",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4088",
+        "record_ref":  "REC-1088",
+        "location_id":  "LOC-103",
+        "recorded_on":  "30-03-2026",
+        "value":  "108553.36",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4089",
+        "record_ref":  "REC-1089",
+        "location_id":  "LOC-201",
+        "recorded_on":  "14-03-2026",
+        "value":  "154371.33",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4090",
+        "record_ref":  "REC-1090",
+        "location_id":  "LOC-201",
+        "recorded_on":  "05-03-2026",
+        "value":  "168963.52",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4091",
+        "record_ref":  "REC-1091",
+        "location_id":  "LOC-103",
+        "recorded_on":  "19-03-2026",
+        "value":  "71937.78",
+        "label":  "Entry for CAT-08"
+    },
+    {
+        "entry_id":  "ENT/2026/4092",
+        "record_ref":  "REC-1092",
+        "location_id":  "LOC-101",
+        "recorded_on":  "09-03-2026",
+        "value":  "167356.77",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4093",
+        "record_ref":  "REC-1093",
+        "location_id":  "LOC-101",
+        "recorded_on":  "05-03-2026",
+        "value":  "27616.93",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4094",
+        "record_ref":  "REC-1094",
+        "location_id":  "LOC-101",
+        "recorded_on":  "01-03-2026",
+        "value":  "177970.27",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4095",
+        "record_ref":  "REC-1095",
+        "location_id":  "LOC-202",
+        "recorded_on":  "14-03-2026",
+        "value":  "65384.06",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4096",
+        "record_ref":  "REC-1096",
+        "location_id":  "LOC-201",
+        "recorded_on":  "14-03-2026",
+        "value":  "140903.8",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4097",
+        "record_ref":  "REC-1097",
+        "location_id":  "LOC-102",
+        "recorded_on":  "20-03-2026",
+        "value":  "90328.13",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4098",
+        "record_ref":  "REC-1098",
+        "location_id":  "LOC-101",
+        "recorded_on":  "18-03-2026",
+        "value":  "33681.45",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4099",
+        "record_ref":  "REC-1099",
+        "location_id":  "LOC-202",
+        "recorded_on":  "30-03-2026",
+        "value":  "181481.33",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4100",
+        "record_ref":  "REC-1100",
+        "location_id":  "LOC-201",
+        "recorded_on":  "07-04-2026",
+        "value":  "126637.27",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4101",
+        "record_ref":  "REC-1101",
+        "location_id":  "LOC-102",
+        "recorded_on":  "09-03-2026",
+        "value":  "11887.09",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4102",
+        "record_ref":  "REC-1102",
+        "location_id":  "LOC-102",
+        "recorded_on":  "05-04-2026",
+        "value":  "19284.8",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4103",
+        "record_ref":  "REC-1103",
+        "location_id":  "LOC-202",
+        "recorded_on":  "16-03-2026",
+        "value":  "130676.84",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4104",
+        "record_ref":  "REC-1104",
+        "location_id":  "LOC-102",
+        "recorded_on":  "18-03-2026",
+        "value":  "153003.81",
+        "label":  "Entry for CAT-08"
+    },
+    {
+        "entry_id":  "ENT/2026/4105",
+        "record_ref":  "REC-1105",
+        "location_id":  "LOC-201",
+        "recorded_on":  "13-03-2026",
+        "value":  "39833.22",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4106",
+        "record_ref":  "REC-1106",
+        "location_id":  "LOC-201",
+        "recorded_on":  "06-04-2026",
+        "value":  "84157.72",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4107",
+        "record_ref":  "REC-1107",
+        "location_id":  "LOC-101",
+        "recorded_on":  "12-03-2026",
+        "value":  "70801.47",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4108",
+        "record_ref":  "REC-1108",
+        "location_id":  "LOC-201",
+        "recorded_on":  "05-03-2026",
+        "value":  "89079.09",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4109",
+        "record_ref":  "REC-1109",
+        "location_id":  "LOC-101",
+        "recorded_on":  "19-03-2026",
+        "value":  "2524.52",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4110",
+        "record_ref":  "REC-1110",
+        "location_id":  "LOC-202",
+        "recorded_on":  "04-03-2026",
+        "value":  "76547.71",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4111",
+        "record_ref":  "REC-1111",
+        "location_id":  "LOC-202",
+        "recorded_on":  "02-04-2026",
+        "value":  "23759.67",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4112",
+        "record_ref":  "1112",
+        "location_id":  "LOC-101",
+        "recorded_on":  "19-03-2026",
+        "value":  "52028.74",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4113",
+        "record_ref":  "REC-1113",
+        "location_id":  "LOC-103",
+        "recorded_on":  "17-03-2026",
+        "value":  "14290.12",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4114",
+        "record_ref":  "REC-1114",
+        "location_id":  "LOC-103",
+        "recorded_on":  "01-04-2026",
+        "value":  "156874.3",
+        "label":  "Entry for CAT-03"
+    },
+    {
+        "entry_id":  "ENT/2026/4115",
+        "record_ref":  "REC-1115",
+        "location_id":  "LOC-201",
+        "recorded_on":  "29-03-2026",
+        "value":  "97713.77",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4116",
+        "record_ref":  "REC-1116",
+        "location_id":  "LOC-102",
+        "recorded_on":  "14-03-2026",
+        "value":  "163160.68",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4117",
+        "record_ref":  "REC-1117",
+        "location_id":  "LOC-201",
+        "recorded_on":  "01-04-2026",
+        "value":  "165984.2",
+        "label":  "Entry for CAT-07"
+    },
+    {
+        "entry_id":  "ENT/2026/4118",
+        "record_ref":  "REC-1118",
+        "location_id":  "LOC-102",
+        "recorded_on":  "23-03-2026",
+        "value":  "104019.85",
+        "label":  "Entry for CAT-01"
+    },
+    {
+        "entry_id":  "ENT/2026/4119",
+        "record_ref":  "REC-1119",
+        "location_id":  "LOC-202",
+        "recorded_on":  "01-04-2026",
+        "value":  "168817.84",
+        "label":  "Entry for CAT-06"
+    },
+    {
+        "entry_id":  "ENT/2026/4120",
+        "record_ref":  "REC-1120",
+        "location_id":  "LOC-101",
+        "recorded_on":  "27-03-2026",
+        "value":  "40063.14",
+        "label":  "Entry for CAT-04"
+    },
+    {
+        "entry_id":  "ENT/2026/4901",
+        "record_ref":  "REC-1999",
+        "location_id":  "LOC-102",
+        "recorded_on":  "18-03-2026",
+        "value":  "41250",
+        "label":  "Entry for CAT-05"
+    },
+    {
+        "entry_id":  "ENT/2026/4902",
+        "record_ref":  "REC-1042",
+        "location_id":  "LOC-101",
+        "recorded_on":  "04-03-2026",
+        "value":  "112837.06",
+        "label":  "Entry for CAT-02"
+    },
+    {
+        "entry_id":  "ENT/2026/4903",
+        "record_ref":  "REC-1055",
+        "location_id":  "LOC-103",
+        "recorded_on":  "14-03-2026",
+        "value":  "107926.39",
+        "label":  "Entry part 2 of 2"
+    }
+]

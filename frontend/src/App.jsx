@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import systemAData from './data/system_a.json';
+import systemBData from './data/system_b.json';
 import { 
   LayoutDashboard, 
   CheckSquare, 
@@ -39,7 +41,10 @@ import {
   FileSpreadsheet,
   PieChart as PieIcon,
   Shield,
-  Eye
+  Eye,
+  FileText,
+  Activity,
+  ArrowRight
 } from 'lucide-react';
 
 // Authentic default dataset representing System A vs System B discrepancies
@@ -203,7 +208,7 @@ const PREVIEW_DATA_ORG_B = {
 };
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('reconciliation'); // 'dashboard' | 'reconciliation' | 'inbox' | 'calendar' | 'reports' | 'portfolio' | 'settings'
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' | 'reconciliation' | 'system_a' | 'system_b' | 'inbox' | 'calendar' | 'reports' | 'portfolio' | 'settings'
   const [selectedOrg, setSelectedOrg] = useState('ORG-A');
   const [activeTab, setActiveTab] = useState('Overview');
   const [reasonFilter, setReasonFilter] = useState('');
@@ -213,6 +218,12 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [backendConnected, setBackendConnected] = useState(false);
   const [data, setData] = useState(PREVIEW_DATA_ORG_A);
+
+  // System A & B raw table filters
+  const [sysASearch, setSysASearch] = useState('');
+  const [sysALocFilter, setSysALocFilter] = useState('');
+  const [sysBSearch, setSysBSearch] = useState('');
+  const [sysBLocFilter, setSysBLocFilter] = useState('');
 
   // Inbox state
   const [inboxFilter, setInboxFilter] = useState('all');
@@ -294,7 +305,7 @@ export default function App() {
     fetchDisagreements();
   }, [selectedOrg, reasonFilter, sortField, sortDirection]);
 
-  // Client-side search and sorting
+  // Client-side search and sorting for Disagreements
   const displayedDisagreements = useMemo(() => {
     let rows = data.disagreements || [];
     if (searchQuery.trim()) {
@@ -309,6 +320,42 @@ export default function App() {
     }
     return rows;
   }, [data.disagreements, searchQuery]);
+
+  // Filtered System A records
+  const filteredSysA = useMemo(() => {
+    let list = systemAData || [];
+    if (sysALocFilter) {
+      list = list.filter(r => r.location_id === sysALocFilter);
+    }
+    if (sysASearch.trim()) {
+      const q = sysASearch.toLowerCase();
+      list = list.filter(r => 
+        r.record_id.toLowerCase().includes(q) || 
+        r.location_id.toLowerCase().includes(q) || 
+        r.category_code.toLowerCase().includes(q) ||
+        r.state.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [sysASearch, sysALocFilter]);
+
+  // Filtered System B entries
+  const filteredSysB = useMemo(() => {
+    let list = systemBData || [];
+    if (sysBLocFilter) {
+      list = list.filter(r => r.location_id === sysBLocFilter);
+    }
+    if (sysBSearch.trim()) {
+      const q = sysBSearch.toLowerCase();
+      list = list.filter(r => 
+        r.entry_id.toLowerCase().includes(q) || 
+        r.record_ref.toLowerCase().includes(q) || 
+        r.location_id.toLowerCase().includes(q) ||
+        (r.label && r.label.toLowerCase().includes(q))
+      );
+    }
+    return list;
+  }, [sysBSearch, sysBLocFilter]);
 
   const handleSortToggle = (field) => {
     if (sortField === field) {
@@ -351,7 +398,6 @@ export default function App() {
     }
   };
 
-  // Mark all inbox items read
   const markAllInboxRead = () => {
     setInboxItems(items => items.map(it => ({ ...it, read: true })));
   };
@@ -371,7 +417,7 @@ export default function App() {
           <ChevronDown size={16} className="brand-arrow" />
         </div>
 
-        {/* Primary Navigation - Fully Interactive */}
+        {/* Primary Navigation */}
         <nav className="sidebar-nav">
           <div 
             className={`nav-item ${currentView === 'dashboard' ? 'active' : ''}`}
@@ -454,11 +500,17 @@ export default function App() {
             <span>Data Sources</span>
             <Database size={13} />
           </div>
-          <div className="section-item" onClick={() => setCurrentView('reconciliation')}>
+          <div 
+            className={`section-item ${currentView === 'system_a' ? 'selected' : ''}`}
+            onClick={() => setCurrentView('system_a')}
+          >
             <span className="dot dot-orange" />
             <span>System A (120 Records)</span>
           </div>
-          <div className="section-item" onClick={() => setCurrentView('reconciliation')}>
+          <div 
+            className={`section-item ${currentView === 'system_b' ? 'selected' : ''}`}
+            onClick={() => setCurrentView('system_b')}
+          >
             <span className="dot dot-magenta" />
             <span>System B (121 Entries)</span>
           </div>
@@ -488,7 +540,6 @@ export default function App() {
       <div className="taskbito-main">
         {/* Top Header */}
         <header className="taskbito-header">
-          {/* Search Bar */}
           <div className="header-search">
             <Search size={16} className="search-icon" />
             <input 
@@ -500,7 +551,6 @@ export default function App() {
             <span className="search-badge">⌘ 1</span>
           </div>
 
-          {/* Right Header Controls */}
           <div className="header-actions">
             <button className="icon-btn" title="AI Verification Active">
               <Sparkles size={16} color="#5D5FEF" />
@@ -518,7 +568,6 @@ export default function App() {
               <span>Integrate</span>
             </button>
 
-            {/* Profile Avatar */}
             <div className="user-profile">
               <img 
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" 
@@ -532,7 +581,6 @@ export default function App() {
 
         {/* Content Body Switcher */}
         <div className="content-body">
-          {/* Status Alert Banner if Backend is offline */}
           {!backendConnected && (
             <div className="status-banner">
               <div className="banner-left">
@@ -546,7 +594,268 @@ export default function App() {
           )}
 
           {/* ========================================================
-              VIEW 1: RECONCILIATION DASHBOARD (Default Core View)
+              VIEW 0: EXECUTIVE DASHBOARD (Figma Taskbito Master View)
+             ======================================================== */}
+          {currentView === 'dashboard' && (
+            <div className="view-container">
+              {/* Dashboard Page Header */}
+              <div className="page-header-row">
+                <div>
+                  <h1 className="page-title">Executive Dashboard</h1>
+                  <p className="page-subtitle">
+                    Ledger health overview, transactional throughput, and reconciliation intelligence for {selectedOrg}
+                  </p>
+                </div>
+                <div className="header-buttons">
+                  <div className="tenant-toggle-group">
+                    <button 
+                      className={`tenant-btn ${selectedOrg === 'ORG-A' ? 'active' : ''}`}
+                      onClick={() => setSelectedOrg('ORG-A')}
+                    >
+                      <ShieldCheck size={14} />
+                      <span>ORG-A</span>
+                    </button>
+                    <button 
+                      className={`tenant-btn ${selectedOrg === 'ORG-B' ? 'active' : ''}`}
+                      onClick={() => setSelectedOrg('ORG-B')}
+                    >
+                      <ShieldCheck size={14} />
+                      <span>ORG-B</span>
+                    </button>
+                  </div>
+                  <button className="btn-secondary" onClick={() => setCurrentView('reports')}>
+                    <Share2 size={15} />
+                    <span>Export Audit</span>
+                  </button>
+                  <button className="btn-primary" onClick={() => setCurrentView('reconciliation')}>
+                    <CheckSquare size={15} />
+                    <span>View Disagreements</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 4 Executive Stat Cards */}
+              <div className="metrics-grid">
+                <div className="metric-card" onClick={() => setCurrentView('system_a')} style={{ cursor: 'pointer' }}>
+                  <div className="metric-header">
+                    <div className="metric-icon-box orange">
+                      <Database size={18} color="#FF8F6B" />
+                    </div>
+                    <span className="metric-title">System A Records</span>
+                    <ArrowRight size={16} className="metric-menu" />
+                  </div>
+                  <div className="metric-value-row">
+                    <span className="metric-number">120</span>
+                    <span className="metric-trend peach">
+                      <ArrowUpRight size={13} /> ₹94.83L
+                    </span>
+                    <span className="metric-period">Total internal ledger volume</span>
+                  </div>
+                </div>
+
+                <div className="metric-card" onClick={() => setCurrentView('system_b')} style={{ cursor: 'pointer' }}>
+                  <div className="metric-header">
+                    <div className="metric-icon-box purple">
+                      <Layers size={18} color="#5D5FEF" />
+                    </div>
+                    <span className="metric-title">System B Entries</span>
+                    <ArrowRight size={16} className="metric-menu" />
+                  </div>
+                  <div className="metric-value-row">
+                    <span className="metric-number">121</span>
+                    <span className="metric-trend purple">
+                      <ArrowUpRight size={13} /> ₹96.08L
+                    </span>
+                    <span className="metric-period">Partner clearing entries</span>
+                  </div>
+                </div>
+
+                <div className="metric-card" onClick={() => setCurrentView('reconciliation')} style={{ cursor: 'pointer' }}>
+                  <div className="metric-header">
+                    <div className="metric-icon-box pink">
+                      <AlertTriangle size={18} color="#D946EF" />
+                    </div>
+                    <span className="metric-title">Total Discrepancies</span>
+                    <ArrowRight size={16} className="metric-menu" />
+                  </div>
+                  <div className="metric-value-row">
+                    <span className="metric-number">{data.total_disagreements}</span>
+                    <span className="metric-trend pink">
+                      <ArrowUpRight size={13} /> {selectedOrg}
+                    </span>
+                    <span className="metric-period">Exceptions requiring attention</span>
+                  </div>
+                </div>
+
+                <div className="metric-card" onClick={() => setCurrentView('portfolio')} style={{ cursor: 'pointer' }}>
+                  <div className="metric-header">
+                    <div className="metric-icon-box teal">
+                      <CheckCircle2 size={18} color="#00C5FF" />
+                    </div>
+                    <span className="metric-title">Reconciliation Rate</span>
+                    <ArrowRight size={16} className="metric-menu" />
+                  </div>
+                  <div className="metric-value-row">
+                    <span className="metric-number">93.8%</span>
+                    <span className="metric-trend teal">
+                      <ArrowUpRight size={13} /> Grade A
+                    </span>
+                    <span className="metric-period">Clean match compliance</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Navigation Action Cards */}
+              <div className="quick-actions-row">
+                <div className="action-card" onClick={() => setCurrentView('system_a')}>
+                  <div className="action-icon orange"><Database size={20} /></div>
+                  <div>
+                    <h4>Browse System A Records</h4>
+                    <p>Inspect all 120 raw transactions with base values, adjustments & state.</p>
+                  </div>
+                  <ArrowRight size={16} className="action-arrow" />
+                </div>
+
+                <div className="action-card" onClick={() => setCurrentView('system_b')}>
+                  <div className="action-icon purple"><Layers size={20} /></div>
+                  <div>
+                    <h4>Browse System B Entries</h4>
+                    <p>Inspect all 121 partner entries, split installments & recorded amounts.</p>
+                  </div>
+                  <ArrowRight size={16} className="action-arrow" />
+                </div>
+
+                <div className="action-card" onClick={() => setCurrentView('reconciliation')}>
+                  <div className="action-icon pink"><AlertTriangle size={20} /></div>
+                  <div>
+                    <h4>Reconcile Exceptions</h4>
+                    <p>Filter by reason, verify split entries, and audit masked locations.</p>
+                  </div>
+                  <ArrowRight size={16} className="action-arrow" />
+                </div>
+              </div>
+
+              {/* Middle Section: Wave Chart & Progress */}
+              <div className="visuals-row">
+                <div className="visual-card breakdown-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <Activity size={18} color="#5D5FEF" />
+                      <span>Ledger Throughput & Reconciliation Wave</span>
+                    </div>
+                    <MoreVertical size={16} className="metric-menu" />
+                  </div>
+
+                  <div className="breakdown-chips">
+                    <div className="chip">
+                      <span className="chip-flag flag-blue">⚑</span>
+                      <div>
+                        <strong>{data.reasons_summary?.VALUE_MISMATCH || 0}</strong>
+                        <span className="chip-label">Value Discrepancies</span>
+                      </div>
+                    </div>
+                    <div className="chip">
+                      <span className="chip-flag flag-yellow">⚑</span>
+                      <div>
+                        <strong>{(data.reasons_summary?.MISSING_IN_B || 0) + (data.reasons_summary?.ORPHAN_IN_B || 0)}</strong>
+                        <span className="chip-label">Missing & Orphans</span>
+                      </div>
+                    </div>
+                    <div className="chip">
+                      <span className="chip-flag flag-coral">⚑</span>
+                      <div>
+                        <strong>{(data.reasons_summary?.LOCATION_MISMATCH || 0) + (data.reasons_summary?.DATE_MISMATCH || 0)}</strong>
+                        <span className="chip-label">Metadata Mismatches</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="chart-container">
+                    <svg viewBox="0 0 500 120" className="wave-svg">
+                      <defs>
+                        <linearGradient id="purpleGradDash" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#5D5FEF" stopOpacity="0.25" />
+                          <stop offset="100%" stopColor="#5D5FEF" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <line x1="0" y1="30" x2="500" y2="30" stroke="#F1F3F9" strokeDasharray="3 3" />
+                      <line x1="0" y1="65" x2="500" y2="65" stroke="#F1F3F9" strokeDasharray="3 3" />
+                      <line x1="0" y1="100" x2="500" y2="100" stroke="#F1F3F9" strokeDasharray="3 3" />
+
+                      <path 
+                        d="M 0,90 Q 60,80 120,70 T 240,45 T 360,35 T 500,20 L 500,120 L 0,120 Z" 
+                        fill="url(#purpleGradDash)" 
+                      />
+                      <path 
+                        d="M 0,90 Q 60,80 120,70 T 240,45 T 360,35 T 500,20" 
+                        fill="none" 
+                        stroke="#5D5FEF" 
+                        strokeWidth="3" 
+                      />
+                      <path 
+                        d="M 0,105 Q 60,98 120,90 T 240,65 T 360,55 T 500,40" 
+                        fill="none" 
+                        stroke="#FF8F6B" 
+                        strokeWidth="2" 
+                      />
+                      <circle cx="240" cy="45" r="4" fill="#5D5FEF" stroke="#FFFFFF" strokeWidth="2" />
+                      <circle cx="360" cy="35" r="4" fill="#5D5FEF" stroke="#FFFFFF" strokeWidth="2" />
+                    </svg>
+
+                    <div className="months-axis">
+                      <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+                      <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="visual-card status-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <ShieldCheck size={18} color="#10B981" />
+                      <span>Tenant Boundary Health</span>
+                    </div>
+                    <MoreVertical size={16} className="metric-menu" />
+                  </div>
+
+                  <div className="status-progress-list">
+                    <div className="status-item">
+                      <div className="status-label-group">
+                        <span className="status-badge-square purple" />
+                        <span className="status-name">Clean Reconciled</span>
+                      </div>
+                      <div className="circular-progress purple">
+                        <span>87%</span>
+                      </div>
+                    </div>
+
+                    <div className="status-item">
+                      <div className="status-label-group">
+                        <span className="status-badge-square violet" />
+                        <span className="status-name">Under Review</span>
+                      </div>
+                      <div className="circular-progress violet">
+                        <span>13%</span>
+                      </div>
+                    </div>
+
+                    <div className="status-item">
+                      <div className="status-label-group">
+                        <span className="status-badge-square orange" />
+                        <span className="status-name">Boundary Protection</span>
+                      </div>
+                      <div className="circular-progress orange">
+                        <span>100%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              VIEW 1: RECONCILIATION TABLE VIEW
              ======================================================== */}
           {currentView === 'reconciliation' && (
             <>
@@ -560,7 +869,6 @@ export default function App() {
                 </div>
 
                 <div className="header-buttons">
-                  {/* Tenant Switcher Button */}
                   <div className="tenant-toggle-group">
                     <button 
                       className={`tenant-btn ${selectedOrg === 'ORG-A' ? 'active' : ''}`}
@@ -690,138 +998,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 4. CHARTS & PROGRESS OVERVIEW ROW */}
-              <div className="visuals-row">
-                {/* Priority Breakdown Wave Card */}
-                <div className="visual-card breakdown-card">
-                  <div className="visual-header">
-                    <div className="title-with-icon">
-                      <Flag size={16} color="#808191" />
-                      <span>Disagreement Breakdown</span>
-                    </div>
-                    <MoreVertical size={16} className="metric-menu" />
-                  </div>
-
-                  <div className="breakdown-chips">
-                    <div className="chip">
-                      <span className="chip-flag flag-blue">⚑</span>
-                      <div>
-                        <strong>{data.reasons_summary?.VALUE_MISMATCH || 0}</strong>
-                        <span className="chip-label">High Discrepancy</span>
-                      </div>
-                    </div>
-
-                    <div className="chip">
-                      <span className="chip-flag flag-yellow">⚑</span>
-                      <div>
-                        <strong>{(data.reasons_summary?.MISSING_IN_B || 0) + (data.reasons_summary?.ORPHAN_IN_B || 0)}</strong>
-                        <span className="chip-label">Missing Entries</span>
-                      </div>
-                    </div>
-
-                    <div className="chip">
-                      <span className="chip-flag flag-coral">⚑</span>
-                      <div>
-                        <strong>{(data.reasons_summary?.LOCATION_MISMATCH || 0) + (data.reasons_summary?.DATE_MISMATCH || 0)}</strong>
-                        <span className="chip-label">Metadata Diffs</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="chart-container">
-                    <svg viewBox="0 0 500 120" className="wave-svg">
-                      <defs>
-                        <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#5D5FEF" stopOpacity="0.25" />
-                          <stop offset="100%" stopColor="#5D5FEF" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
-                      <line x1="0" y1="30" x2="500" y2="30" stroke="#F1F3F9" strokeDasharray="3 3" />
-                      <line x1="0" y1="65" x2="500" y2="65" stroke="#F1F3F9" strokeDasharray="3 3" />
-                      <line x1="0" y1="100" x2="500" y2="100" stroke="#F1F3F9" strokeDasharray="3 3" />
-
-                      <path 
-                        d="M 0,90 Q 60,80 120,70 T 240,45 T 360,35 T 500,20 L 500,120 L 0,120 Z" 
-                        fill="url(#purpleGrad)" 
-                      />
-                      <path 
-                        d="M 0,90 Q 60,80 120,70 T 240,45 T 360,35 T 500,20" 
-                        fill="none" 
-                        stroke="#5D5FEF" 
-                        strokeWidth="3" 
-                      />
-                      <path 
-                        d="M 0,105 Q 60,98 120,90 T 240,65 T 360,55 T 500,40" 
-                        fill="none" 
-                        stroke="#FF8F6B" 
-                        strokeWidth="2" 
-                      />
-                      <circle cx="240" cy="45" r="4" fill="#5D5FEF" stroke="#FFFFFF" strokeWidth="2" />
-                      <circle cx="360" cy="35" r="4" fill="#5D5FEF" stroke="#FFFFFF" strokeWidth="2" />
-                    </svg>
-
-                    <div className="months-axis">
-                      <span>Jan</span>
-                      <span>Feb</span>
-                      <span>Mar</span>
-                      <span>Apr</span>
-                      <span>May</span>
-                      <span>Jun</span>
-                      <span>Jul</span>
-                      <span>Aug</span>
-                      <span>Sep</span>
-                      <span>Oct</span>
-                      <span>Nov</span>
-                      <span>Dec</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Status Overview Card */}
-                <div className="visual-card status-card">
-                  <div className="visual-header">
-                    <div className="title-with-icon">
-                      <CheckSquare size={16} color="#808191" />
-                      <span>Status Overview</span>
-                    </div>
-                    <MoreVertical size={16} className="metric-menu" />
-                  </div>
-
-                  <div className="status-progress-list">
-                    <div className="status-item">
-                      <div className="status-label-group">
-                        <span className="status-badge-square purple" />
-                        <span className="status-name">Under Review: Value</span>
-                      </div>
-                      <div className="circular-progress purple">
-                        <span>60%</span>
-                      </div>
-                    </div>
-
-                    <div className="status-item">
-                      <div className="status-label-group">
-                        <span className="status-badge-square violet" />
-                        <span className="status-name">Investigating: Splits</span>
-                      </div>
-                      <div className="circular-progress violet">
-                        <span>30%</span>
-                      </div>
-                    </div>
-
-                    <div className="status-item">
-                      <div className="status-label-group">
-                        <span className="status-badge-square orange" />
-                        <span className="status-name">Reconciled Clean</span>
-                      </div>
-                      <div className="circular-progress orange">
-                        <span>40%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 5. DISAGREEMENTS TABLE */}
+              {/* Reconciled Disagreements Table */}
               <div className="table-wrapper-card">
                 <div className="table-controls-header">
                   <div className="filter-pills-row">
@@ -991,7 +1168,251 @@ export default function App() {
           )}
 
           {/* ========================================================
-              VIEW 2: INBOX & ALERTS
+              VIEW 2: SYSTEM A RECORDS (120 Transactions)
+             ======================================================== */}
+          {currentView === 'system_a' && (
+            <div className="view-container">
+              <div className="page-header-row">
+                <div>
+                  <h1 className="page-title">System A Records (ERP Internal Ledger)</h1>
+                  <p className="page-subtitle">
+                    Complete listing of all 120 primary business transactions with base amounts, adjustments & totals
+                  </p>
+                </div>
+                <div className="header-buttons">
+                  <button className="btn-secondary" onClick={() => setCurrentView('system_b')}>
+                    <Layers size={14} />
+                    <span>View System B Entries</span>
+                  </button>
+                  <button className="btn-primary" onClick={() => setCurrentView('reconciliation')}>
+                    <CheckSquare size={14} />
+                    <span>Run Disagreement Comparison</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Controls bar */}
+              <div className="table-controls-header">
+                <div className="header-search" style={{ width: '320px' }}>
+                  <Search size={15} className="search-icon" />
+                  <input 
+                    type="text" 
+                    placeholder="Search Record ID, Location, Category..." 
+                    value={sysASearch}
+                    onChange={(e) => setSysASearch(e.target.value)}
+                  />
+                </div>
+
+                <div className="filter-pills-row">
+                  <button 
+                    className={`filter-pill ${sysALocFilter === '' ? 'active' : ''}`}
+                    onClick={() => setSysALocFilter('')}
+                  >
+                    All Locations ({systemAData.length})
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysALocFilter === 'LOC-101' ? 'active' : ''}`}
+                    onClick={() => setSysALocFilter('LOC-101')}
+                  >
+                    LOC-101
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysALocFilter === 'LOC-102' ? 'active' : ''}`}
+                    onClick={() => setSysALocFilter('LOC-102')}
+                  >
+                    LOC-102
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysALocFilter === 'LOC-103' ? 'active' : ''}`}
+                    onClick={() => setSysALocFilter('LOC-103')}
+                  >
+                    LOC-103
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysALocFilter === 'LOC-201' ? 'active' : ''}`}
+                    onClick={() => setSysALocFilter('LOC-201')}
+                  >
+                    LOC-201
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysALocFilter === 'LOC-202' ? 'active' : ''}`}
+                    onClick={() => setSysALocFilter('LOC-202')}
+                  >
+                    LOC-202
+                  </button>
+                </div>
+
+                <div className="items-count-badge">
+                  Showing <strong>{filteredSysA.length}</strong> of 120 records
+                </div>
+              </div>
+
+              {/* System A Table */}
+              <div className="table-wrapper-card">
+                <div className="table-scroll">
+                  <table className="taskbito-table">
+                    <thead>
+                      <tr>
+                        <th>Record ID</th>
+                        <th>Location</th>
+                        <th>Event Date</th>
+                        <th>Category</th>
+                        <th>Actor ID</th>
+                        <th className="text-right">Base Value</th>
+                        <th className="text-right">Adjustment</th>
+                        <th className="text-right">Total Value</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredSysA.map((row, idx) => (
+                        <tr key={row.record_id || idx}>
+                          <td><span className="record-chip">{row.record_id}</span></td>
+                          <td><span className="location-text">{row.location_id}</span></td>
+                          <td><span className="mono-num text-muted">{row.event_date}</span></td>
+                          <td><span className="cat-badge">{row.category_code}</span></td>
+                          <td><span className="text-muted font-mono">{row.actor_id || '—'}</span></td>
+                          <td className="text-right mono-num">{formatCurrency(row.base_value)}</td>
+                          <td className="text-right mono-num">{formatCurrency(row.adjustment)}</td>
+                          <td className="text-right mono-num font-bold">{formatCurrency(row.total_value)}</td>
+                          <td>
+                            <span className={`status-pill ${row.state === 'CONFIRMED' ? 'confirmed' : 'voided'}`}>
+                              {row.state}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              VIEW 3: SYSTEM B ENTRIES (121 Clearing Entries)
+             ======================================================== */}
+          {currentView === 'system_b' && (
+            <div className="view-container">
+              <div className="page-header-row">
+                <div>
+                  <h1 className="page-title">System B Entries (Partner Clearing Records)</h1>
+                  <p className="page-subtitle">
+                    Complete listing of all 121 secondary partner records, including split tranches, dirty references & labels
+                  </p>
+                </div>
+                <div className="header-buttons">
+                  <button className="btn-secondary" onClick={() => setCurrentView('system_a')}>
+                    <Database size={14} />
+                    <span>View System A Records</span>
+                  </button>
+                  <button className="btn-primary" onClick={() => setCurrentView('reconciliation')}>
+                    <CheckSquare size={14} />
+                    <span>Compare with System A</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Controls bar */}
+              <div className="table-controls-header">
+                <div className="header-search" style={{ width: '320px' }}>
+                  <Search size={15} className="search-icon" />
+                  <input 
+                    type="text" 
+                    placeholder="Search Entry ID, Record Ref, Location..." 
+                    value={sysBSearch}
+                    onChange={(e) => setSysBSearch(e.target.value)}
+                  />
+                </div>
+
+                <div className="filter-pills-row">
+                  <button 
+                    className={`filter-pill ${sysBLocFilter === '' ? 'active' : ''}`}
+                    onClick={() => setSysBLocFilter('')}
+                  >
+                    All Locations ({systemBData.length})
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysBLocFilter === 'LOC-101' ? 'active' : ''}`}
+                    onClick={() => setSysBLocFilter('LOC-101')}
+                  >
+                    LOC-101
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysBLocFilter === 'LOC-102' ? 'active' : ''}`}
+                    onClick={() => setSysBLocFilter('LOC-102')}
+                  >
+                    LOC-102
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysBLocFilter === 'LOC-103' ? 'active' : ''}`}
+                    onClick={() => setSysBLocFilter('LOC-103')}
+                  >
+                    LOC-103
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysBLocFilter === 'LOC-201' ? 'active' : ''}`}
+                    onClick={() => setSysBLocFilter('LOC-201')}
+                  >
+                    LOC-201
+                  </button>
+                  <button 
+                    className={`filter-pill ${sysBLocFilter === 'LOC-202' ? 'active' : ''}`}
+                    onClick={() => setSysBLocFilter('LOC-202')}
+                  >
+                    LOC-202
+                  </button>
+                </div>
+
+                <div className="items-count-badge">
+                  Showing <strong>{filteredSysB.length}</strong> of 121 entries
+                </div>
+              </div>
+
+              {/* System B Table */}
+              <div className="table-wrapper-card">
+                <div className="table-scroll">
+                  <table className="taskbito-table">
+                    <thead>
+                      <tr>
+                        <th>Entry ID</th>
+                        <th>Referenced Record</th>
+                        <th>Location</th>
+                        <th>Event Date</th>
+                        <th className="text-right">Recorded Value</th>
+                        <th>Label / Clerical Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredSysB.map((row, idx) => (
+                        <tr key={row.entry_id || idx}>
+                          <td><span className="entry-chip">{row.entry_id}</span></td>
+                          <td>
+                            <span className="record-chip">
+                              {row.record_ref || '—'}
+                            </span>
+                          </td>
+                          <td><span className="location-text">{row.location_id}</span></td>
+                          <td><span className="mono-num text-muted">{row.recorded_on}</span></td>
+                          <td className="text-right mono-num font-bold">
+                            {row.value && row.value.trim() !== '' ? formatCurrency(row.value) : (
+                              <span className="null-dash" title="Empty value stored as NULL">NULL (Blank)</span>
+                            )}
+                          </td>
+                          <td>
+                            <span className="text-muted font-sans font-medium">{row.label || '—'}</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              VIEW 4: INBOX & ALERTS
              ======================================================== */}
           {currentView === 'inbox' && (
             <div className="view-container">
@@ -1014,7 +1435,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Inbox Filter Tabs */}
               <div className="inbox-filter-bar">
                 {['all', 'unread', 'urgent'].map((f) => (
                   <button 
@@ -1031,7 +1451,6 @@ export default function App() {
                 ))}
               </div>
 
-              {/* Inbox Message List */}
               <div className="inbox-list">
                 {inboxItems
                   .filter(item => {
@@ -1058,7 +1477,7 @@ export default function App() {
           )}
 
           {/* ========================================================
-              VIEW 3: AUDIT CALENDAR
+              VIEW 5: AUDIT CALENDAR
              ======================================================== */}
           {currentView === 'calendar' && (
             <div className="view-container">
@@ -1082,7 +1501,6 @@ export default function App() {
               </div>
 
               <div className="calendar-layout-grid">
-                {/* Calendar Grid */}
                 <div className="calendar-card">
                   <div className="calendar-month-nav">
                     <div className="calendar-month-title">
@@ -1100,18 +1518,15 @@ export default function App() {
                   </div>
 
                   <div className="calendar-days-grid">
-                    {/* Padding days */}
                     <div className="cal-day other-month"><span>27</span></div>
                     <div className="cal-day other-month"><span>28</span></div>
 
-                    {/* March 1 - 31 */}
                     {Array.from({ length: 31 }, (_, idx) => {
                       const dayNum = idx + 1;
                       const dayStr = dayNum < 10 ? `0${dayNum}` : `${dayNum}`;
                       const fullDate = `2026-03-${dayStr}`;
                       const isSelected = selectedCalendarDate === fullDate;
 
-                      // Highlight key discrepancy and reconciliation dates from dataset
                       const hasDiscrepancy = dayNum === 26 || dayNum === 14 || dayNum === 19 || dayNum === 31;
                       const hasBatch = dayNum === 3 || dayNum === 4 || dayNum === 11 || dayNum === 22;
 
@@ -1138,7 +1553,6 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Calendar Day Inspector */}
                 <div className="calendar-sidebar-card">
                   <div className="day-inspector-header">
                     <Clock size={16} color="#5D5FEF" />
@@ -1173,7 +1587,7 @@ export default function App() {
           )}
 
           {/* ========================================================
-              VIEW 4: AUDIT & EXPORT REPORTS
+              VIEW 6: AUDIT & EXPORT REPORTS
              ======================================================== */}
           {currentView === 'reports' && (
             <div className="view-container">
@@ -1206,7 +1620,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Reports Cards Grid */}
               <div className="reports-grid">
                 <div className="visual-card">
                   <div className="visual-header">
@@ -1263,7 +1676,7 @@ export default function App() {
           )}
 
           {/* ========================================================
-              VIEW 5: FINANCIAL PORTFOLIO & ANALYTICS
+              VIEW 7: FINANCIAL PORTFOLIO & ANALYTICS
              ======================================================== */}
           {currentView === 'portfolio' && (
             <div className="view-container">
@@ -1286,7 +1699,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Portfolio Metrics */}
               <div className="metrics-grid">
                 <div className="metric-card">
                   <span className="metric-title">System A Total Ledger</span>
@@ -1321,7 +1733,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Exposure Analysis Chart */}
               <div className="visuals-row" style={{ marginTop: '20px' }}>
                 <div className="visual-card">
                   <div className="visual-header">
@@ -1377,7 +1788,7 @@ export default function App() {
           )}
 
           {/* ========================================================
-              VIEW 6: SETTINGS
+              VIEW 8: SETTINGS
              ======================================================== */}
           {currentView === 'settings' && (
             <div className="view-container">

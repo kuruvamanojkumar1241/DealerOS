@@ -1490,3 +1490,88 @@ body {
   color: #10B981;
   font-weight: 700;
 }
+
+/* Quick Actions Row */
+.quick-actions-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.action-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  border-color: var(--primary-purple);
+}
+
+.action-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.action-icon.orange { background: #FFF3EB; color: #FF8F6B; }
+.action-icon.purple { background: #ECECFE; color: #5D5FEF; }
+.action-icon.pink { background: #FCEBFA; color: #D946EF; }
+
+.action-card h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.action-card p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+.action-arrow {
+  margin-left: auto;
+  color: var(--text-muted);
+}
+
+/* Category & Status Badges */
+.cat-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #ECECFE;
+  color: var(--primary-purple);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.status-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+}
+
+.status-pill.confirmed {
+  background: #DCFCE7;
+  color: #15803D;
+}
+
+.status-pill.voided {
+  background: #FEE2E2;
+  color: #DC2626;
+}
