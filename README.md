@@ -184,3 +184,5 @@ While redacting the external location ID (`[REDACTED_CROSS_TENANT_LOCATION]`) gu
 1. **Streaming CSV Ingestion & Chunked Reconciliation**: Migrate from synchronous in-memory reconciliation to streaming chunk processing with Django database transactions and a Celery background worker queue to handle multi-gigabyte files.
 2. **Audit Trails & Dispute Resolution Workflow**: Add an interactive resolution mechanism allowing operators to mark disagreements as "Reviewed", "Accepted Split", or "Disputed", with full immutable audit logging tracking who resolved each item and why.
 3. **Database-Level Window Functions for Million-Row Reconciliation**: Implement composite SQL index strategies and SQL window queries to perform pre-filtering directly in SQLite/PostgreSQL prior to engine processing.
+#   D e a l e r O S  
+ 
