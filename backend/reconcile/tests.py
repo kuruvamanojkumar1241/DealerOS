@@ -358,3 +358,61 @@ class ReconciliationComparisonTests(TestCase):
         # Ensure ORG-B's private location ID 'LOC-201' is NEVER exposed in the location field for ORG-A
         self.assertNotIn("LOC-201", loc_mismatch["location"])
         self.assertIn("REDACTED", loc_mismatch["details"])
+
+
+class DisagreementsApiIntegrationTests(TestCase):
+    """
+    Integration tests for the REST API endpoints and database-backed tenant isolation.
+    """
+
+    def setUp(self):
+        from reconcile.importer import DataImporter
+        # Load sample data into database
+        DataImporter().import_all()
+
+    def test_api_organizations_list(self):
+        response = self.client.get("/api/organizations/")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        org_ids = [item["org_id"] for item in data]
+        self.assertIn("ORG-A", org_ids)
+        self.assertIn("ORG-B", org_ids)
+
+    def test_api_disagreements_org_a(self):
+        response = self.client.get("/api/disagreements/?org=ORG-A")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["org"], "ORG-A")
+        self.assertGreater(data["total_disagreements"], 0)
+
+        # Tenant isolation check: zero records should contain an unmasked ORG-B location
+        for row in data["disagreements"]:
+            self.assertNotEqual(row.get("location"), "LOC-201")
+            self.assertNotEqual(row.get("location"), "LOC-202")
+
+    def test_api_disagreements_org_b(self):
+        response = self.client.get("/api/disagreements/?org=ORG-B")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["org"], "ORG-B")
+        self.assertGreater(data["total_disagreements"], 0)
+
+        # Tenant isolation check: zero records should contain an ORG-A location
+        for row in data["disagreements"]:
+            self.assertNotEqual(row.get("location"), "LOC-101")
+            self.assertNotEqual(row.get("location"), "LOC-102")
+            self.assertNotEqual(row.get("location"), "LOC-103")
+
+    def test_api_filter_by_reason(self):
+        response = self.client.get("/api/disagreements/?org=ORG-A&reason=MISSING_IN_B")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        for row in data["disagreements"]:
+            self.assertEqual(row["reason"], "MISSING_IN_B")
+
+    def test_api_sort_by_value(self):
+        response = self.client.get("/api/disagreements/?org=ORG-A&sort=-value")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        disagreements = data["disagreements"]
+        self.assertGreater(len(disagreements), 0)
