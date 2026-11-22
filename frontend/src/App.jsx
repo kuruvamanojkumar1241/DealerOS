@@ -24,15 +24,25 @@ import {
   CheckCircle2, 
   UserPlus, 
   HelpCircle, 
-  Settings, 
+  Settings as SettingsIcon, 
   Share2, 
   Flag,
   Layers,
-  Database
+  Database,
+  Download,
+  Printer,
+  Check,
+  Clock,
+  ChevronLeft,
+  ChevronRight,
+  TrendingUp,
+  FileSpreadsheet,
+  PieChart as PieIcon,
+  Shield,
+  Eye
 } from 'lucide-react';
 
 // Authentic default dataset representing System A vs System B discrepancies
-// Used as immediate preview and fallback if Django backend server is starting up
 const PREVIEW_DATA_ORG_A = {
   org: 'ORG-A',
   total_disagreements: 16,
@@ -193,6 +203,7 @@ const PREVIEW_DATA_ORG_B = {
 };
 
 export default function App() {
+  const [currentView, setCurrentView] = useState('reconciliation'); // 'dashboard' | 'reconciliation' | 'inbox' | 'calendar' | 'reports' | 'portfolio' | 'settings'
   const [selectedOrg, setSelectedOrg] = useState('ORG-A');
   const [activeTab, setActiveTab] = useState('Overview');
   const [reasonFilter, setReasonFilter] = useState('');
@@ -202,6 +213,54 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [backendConnected, setBackendConnected] = useState(false);
   const [data, setData] = useState(PREVIEW_DATA_ORG_A);
+
+  // Inbox state
+  const [inboxFilter, setInboxFilter] = useState('all');
+  const [inboxItems, setInboxItems] = useState([
+    {
+      id: 1,
+      title: 'Cross-Tenant Location Trap (REC-1077)',
+      type: 'URGENT',
+      date: 'Today, 11:42 AM',
+      read: false,
+      desc: 'System A transaction at LOC-102 was recorded under LOC-201 (ORG-B) in System B. The external location was automatically masked as [REDACTED_CROSS_TENANT_LOCATION] to protect tenant boundary.'
+    },
+    {
+      id: 2,
+      title: 'Split Settlement Confirmed (REC-1055)',
+      type: 'SUCCESS',
+      date: 'Today, 09:15 AM',
+      read: false,
+      desc: 'Record REC-1055 split across ENT/2026/4055 (₹71,950.93) and ENT/2026/4903 (₹1,07,926.39) perfectly sums to System A total (₹1,79,877.32). Reconciled clean, not flagged as duplicate.'
+    },
+    {
+      id: 3,
+      title: 'Unreconciled Duplicate Detected (REC-1042)',
+      type: 'ERROR',
+      date: 'Yesterday, 04:30 PM',
+      read: true,
+      desc: 'Entries ENT/2026/4042 and ENT/2026/4902 both record ₹1,12,837.06, totaling ₹2,25,674.12. Exceeds System A ledger by ₹1,12,837.06.'
+    },
+    {
+      id: 4,
+      title: 'Null / Empty Value Flagged (ENT/2026/4050)',
+      type: 'WARNING',
+      date: '20 Mar 2026',
+      read: true,
+      desc: 'System B entry has an empty value. In accordance with audit standards, the amount was stored as NULL and flagged under VALUE_MISMATCH rather than coerced to 0.00.'
+    },
+    {
+      id: 5,
+      title: 'Orphan Entry Detected (ENT/2026/4901)',
+      type: 'WARNING',
+      date: '18 Mar 2026',
+      read: true,
+      desc: 'System B entry points to reference REC-1999 which does not exist in System A ledger. Attributed to ORG-A via LOC-102.'
+    }
+  ]);
+
+  // Calendar state
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState('2026-03-26');
 
   // Fetch from Django API backend with fallback to preview data
   const fetchDisagreements = async () => {
@@ -216,7 +275,6 @@ export default function App() {
       setData(json);
       setBackendConnected(true);
     } catch (err) {
-      // Graceful fallback to rich local state so UI never crashes if backend is spinning up
       setBackendConnected(false);
       const fallback = selectedOrg === 'ORG-A' ? PREVIEW_DATA_ORG_A : PREVIEW_DATA_ORG_B;
       let filtered = [...fallback.disagreements];
@@ -293,12 +351,17 @@ export default function App() {
     }
   };
 
+  // Mark all inbox items read
+  const markAllInboxRead = () => {
+    setInboxItems(items => items.map(it => ({ ...it, read: true })));
+  };
+
   return (
     <div className="taskbito-layout">
       {/* 1. LEFT SIDEBAR (Dark Figma Theme #1D1932) */}
       <aside className="taskbito-sidebar">
         {/* Brand / Logo */}
-        <div className="sidebar-brand">
+        <div className="sidebar-brand" onClick={() => setCurrentView('dashboard')}>
           <div className="brand-icon-box">
             <LayoutDashboard size={20} color="#FFFFFF" />
           </div>
@@ -308,35 +371,56 @@ export default function App() {
           <ChevronDown size={16} className="brand-arrow" />
         </div>
 
-        {/* Primary Navigation */}
+        {/* Primary Navigation - Fully Interactive */}
         <nav className="sidebar-nav">
-          <div className="nav-item">
+          <div 
+            className={`nav-item ${currentView === 'dashboard' ? 'active' : ''}`}
+            onClick={() => setCurrentView('dashboard')}
+          >
             <LayoutDashboard size={18} />
             <span>Dashboard</span>
             <ChevronDown size={14} className="nav-arrow" />
           </div>
 
-          <div className="nav-item active">
+          <div 
+            className={`nav-item ${currentView === 'reconciliation' ? 'active' : ''}`}
+            onClick={() => setCurrentView('reconciliation')}
+          >
             <CheckSquare size={18} />
             <span>Reconciliation</span>
           </div>
 
-          <div className="nav-item">
+          <div 
+            className={`nav-item ${currentView === 'inbox' ? 'active' : ''}`}
+            onClick={() => setCurrentView('inbox')}
+          >
             <Inbox size={18} />
             <span>Inbox</span>
+            {inboxItems.filter(i => !i.read).length > 0 && (
+              <span className="nav-badge-pill">{inboxItems.filter(i => !i.read).length}</span>
+            )}
           </div>
 
-          <div className="nav-item">
+          <div 
+            className={`nav-item ${currentView === 'calendar' ? 'active' : ''}`}
+            onClick={() => setCurrentView('calendar')}
+          >
             <CalendarIcon size={18} />
             <span>Calendar</span>
           </div>
 
-          <div className="nav-item">
+          <div 
+            className={`nav-item ${currentView === 'reports' ? 'active' : ''}`}
+            onClick={() => setCurrentView('reports')}
+          >
             <BarChart2 size={18} />
             <span>Reports</span>
           </div>
 
-          <div className="nav-item">
+          <div 
+            className={`nav-item ${currentView === 'portfolio' ? 'active' : ''}`}
+            onClick={() => setCurrentView('portfolio')}
+          >
             <Briefcase size={18} />
             <span>Portfolio</span>
           </div>
@@ -370,11 +454,11 @@ export default function App() {
             <span>Data Sources</span>
             <Database size={13} />
           </div>
-          <div className="section-item">
+          <div className="section-item" onClick={() => setCurrentView('reconciliation')}>
             <span className="dot dot-orange" />
             <span>System A (120 Records)</span>
           </div>
-          <div className="section-item">
+          <div className="section-item" onClick={() => setCurrentView('reconciliation')}>
             <span className="dot dot-magenta" />
             <span>System B (121 Entries)</span>
           </div>
@@ -382,22 +466,25 @@ export default function App() {
 
         {/* Bottom Sidebar Tools */}
         <div className="sidebar-footer">
-          <div className="footer-item">
+          <div className="footer-item" onClick={() => setCurrentView('inbox')}>
             <UserPlus size={16} />
             <span>Invite Auditor</span>
           </div>
-          <div className="footer-item">
+          <div className="footer-item" onClick={() => setCurrentView('reports')}>
             <HelpCircle size={16} />
             <span>Rules & Specs</span>
           </div>
-          <div className="footer-item">
-            <Settings size={16} />
+          <div 
+            className={`footer-item ${currentView === 'settings' ? 'active' : ''}`}
+            onClick={() => setCurrentView('settings')}
+          >
+            <SettingsIcon size={16} />
             <span>Settings</span>
           </div>
         </div>
       </aside>
 
-      {/* 2. MAIN DASHBOARD CONTENT */}
+      {/* 2. MAIN DASHBOARD CONTENT AREA */}
       <div className="taskbito-main">
         {/* Top Header */}
         <header className="taskbito-header">
@@ -418,10 +505,15 @@ export default function App() {
             <button className="icon-btn" title="AI Verification Active">
               <Sparkles size={16} color="#5D5FEF" />
             </button>
-            <button className="icon-btn" title="Notifications">
+            <button 
+              className="icon-btn relative-btn" 
+              title="Notifications"
+              onClick={() => setCurrentView('inbox')}
+            >
               <Bell size={16} />
+              {inboxItems.filter(i => !i.read).length > 0 && <span className="unread-dot" />}
             </button>
-            <button className="integrate-btn">
+            <button className="integrate-btn" onClick={() => setCurrentView('settings')}>
               <Layers size={14} />
               <span>Integrate</span>
             </button>
@@ -430,7 +522,7 @@ export default function App() {
             <div className="user-profile">
               <img 
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" 
-                alt="Daisy" 
+                alt="Auditor" 
                 className="user-avatar"
               />
               <ChevronDown size={14} className="user-arrow" />
@@ -438,53 +530,9 @@ export default function App() {
           </div>
         </header>
 
-        {/* Content Body */}
+        {/* Content Body Switcher */}
         <div className="content-body">
-          {/* Page Title & Actions */}
-          <div className="page-header-row">
-            <div>
-              <h1 className="page-title">Ledger Disagreements</h1>
-              <p className="page-subtitle">
-                Automated reconciliation comparison between System A (Internal ERP) & System B (Partner Clearing)
-              </p>
-            </div>
-
-            <div className="header-buttons">
-              {/* Tenant Switcher Button */}
-              <div className="tenant-toggle-group">
-                <button 
-                  className={`tenant-btn ${selectedOrg === 'ORG-A' ? 'active' : ''}`}
-                  onClick={() => setSelectedOrg('ORG-A')}
-                >
-                  <ShieldCheck size={14} />
-                  <span>ORG-A</span>
-                </button>
-                <button 
-                  className={`tenant-btn ${selectedOrg === 'ORG-B' ? 'active' : ''}`}
-                  onClick={() => setSelectedOrg('ORG-B')}
-                >
-                  <ShieldCheck size={14} />
-                  <span>ORG-B</span>
-                </button>
-              </div>
-
-              <button className="btn-secondary" onClick={() => window.print()}>
-                <Share2 size={15} />
-                <span>Share Tasks</span>
-              </button>
-
-              <button 
-                className="btn-primary" 
-                onClick={fetchDisagreements} 
-                disabled={loading}
-              >
-                <RefreshCw size={15} className={loading ? 'spin' : ''} />
-                <span>{loading ? 'Reconciling...' : '+ Reconcile Now'}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Status Alert Banner */}
+          {/* Status Alert Banner if Backend is offline */}
           {!backendConnected && (
             <div className="status-banner">
               <div className="banner-left">
@@ -497,421 +545,928 @@ export default function App() {
             </div>
           )}
 
-          {/* Tab Navigation Row */}
-          <div className="tabs-row">
-            {['Overview', 'Lists', 'Board', 'Calendar', 'Task assigned to me'].map((tab) => (
-              <button 
-                key={tab} 
-                className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab === 'Overview' && <CheckSquare size={14} className="tab-icon" />}
-                <span>{tab}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* 3. FOUR METRIC STAT CARDS (Figma Exact Layout) */}
-          <div className="metrics-grid">
-            {/* Card 1: Value Mismatch */}
-            <div className="metric-card">
-              <div className="metric-header">
-                <div className="metric-icon-box purple">
-                  <CheckSquare size={18} color="#5D5FEF" />
+          {/* ========================================================
+              VIEW 1: RECONCILIATION DASHBOARD (Default Core View)
+             ======================================================== */}
+          {currentView === 'reconciliation' && (
+            <>
+              {/* Page Title & Actions */}
+              <div className="page-header-row">
+                <div>
+                  <h1 className="page-title">Ledger Disagreements</h1>
+                  <p className="page-subtitle">
+                    Automated reconciliation comparison between System A (Internal ERP) & System B (Partner Clearing)
+                  </p>
                 </div>
-                <span className="metric-title">Value Mismatch</span>
-                <MoreVertical size={16} className="metric-menu" />
-              </div>
-              <div className="metric-value-row">
-                <span className="metric-number">
-                  {data.reasons_summary?.VALUE_MISMATCH || 0}
-                </span>
-                <span className="metric-trend purple">
-                  <ArrowUpRight size={13} /> 20%
-                </span>
-                <span className="metric-period">In the last 7 days</span>
-              </div>
-            </div>
 
-            {/* Card 2: Missing & Orphans */}
-            <div className="metric-card">
-              <div className="metric-header">
-                <div className="metric-icon-box pink">
-                  <AlertTriangle size={18} color="#D946EF" />
+                <div className="header-buttons">
+                  {/* Tenant Switcher Button */}
+                  <div className="tenant-toggle-group">
+                    <button 
+                      className={`tenant-btn ${selectedOrg === 'ORG-A' ? 'active' : ''}`}
+                      onClick={() => setSelectedOrg('ORG-A')}
+                    >
+                      <ShieldCheck size={14} />
+                      <span>ORG-A</span>
+                    </button>
+                    <button 
+                      className={`tenant-btn ${selectedOrg === 'ORG-B' ? 'active' : ''}`}
+                      onClick={() => setSelectedOrg('ORG-B')}
+                    >
+                      <ShieldCheck size={14} />
+                      <span>ORG-B</span>
+                    </button>
+                  </div>
+
+                  <button className="btn-secondary" onClick={() => window.print()}>
+                    <Share2 size={15} />
+                    <span>Share Report</span>
+                  </button>
+
+                  <button 
+                    className="btn-primary" 
+                    onClick={fetchDisagreements} 
+                    disabled={loading}
+                  >
+                    <RefreshCw size={15} className={loading ? 'spin' : ''} />
+                    <span>{loading ? 'Reconciling...' : '+ Reconcile Now'}</span>
+                  </button>
                 </div>
-                <span className="metric-title">Missing / Orphan</span>
-                <MoreVertical size={16} className="metric-menu" />
-              </div>
-              <div className="metric-value-row">
-                <span className="metric-number">
-                  {(data.reasons_summary?.MISSING_IN_B || 0) + (data.reasons_summary?.ORPHAN_IN_B || 0)}
-                </span>
-                <span className="metric-trend pink">
-                  <ArrowUpRight size={13} /> 15%
-                </span>
-                <span className="metric-period">In the last 7 days</span>
-              </div>
-            </div>
-
-            {/* Card 3: Duplicates & Voided */}
-            <div className="metric-card">
-              <div className="metric-header">
-                <div className="metric-icon-box teal">
-                  <Layers size={18} color="#00C5FF" />
-                </div>
-                <span className="metric-title">Duplicate / Void</span>
-                <MoreVertical size={16} className="metric-menu" />
-              </div>
-              <div className="metric-value-row">
-                <span className="metric-number">
-                  {(data.reasons_summary?.DUPLICATE_IN_B || 0) + (data.reasons_summary?.VOIDED_RECORD || 0)}
-                </span>
-                <span className="metric-trend teal">
-                  <ArrowUpRight size={13} /> 20%
-                </span>
-                <span className="metric-period">In the last 7 days</span>
-              </div>
-            </div>
-
-            {/* Card 4: Metadata Differences */}
-            <div className="metric-card">
-              <div className="metric-header">
-                <div className="metric-icon-box peach">
-                  <CalendarIcon size={18} color="#FF8F6B" />
-                </div>
-                <span className="metric-title">Location / Date</span>
-                <MoreVertical size={16} className="metric-menu" />
-              </div>
-              <div className="metric-value-row">
-                <span className="metric-number">
-                  {(data.reasons_summary?.LOCATION_MISMATCH || 0) + (data.reasons_summary?.DATE_MISMATCH || 0)}
-                </span>
-                <span className="metric-trend peach">
-                  <ArrowUpRight size={13} /> 12%
-                </span>
-                <span className="metric-period">In the last 7 days</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 4. CHARTS & PROGRESS OVERVIEW (Figma Middle Section) */}
-          <div className="visuals-row">
-            {/* Priority Breakdown Wave Card */}
-            <div className="visual-card breakdown-card">
-              <div className="visual-header">
-                <div className="title-with-icon">
-                  <Flag size={16} color="#808191" />
-                  <span>Disagreement Breakdown</span>
-                </div>
-                <MoreVertical size={16} className="metric-menu" />
               </div>
 
-              {/* Stat Chips */}
-              <div className="breakdown-chips">
-                <div className="chip">
-                  <span className="chip-flag flag-blue">⚑</span>
-                  <div>
-                    <strong>{data.reasons_summary?.VALUE_MISMATCH || 0}</strong>
-                    <span className="chip-label">High Discrepancy</span>
+              {/* Tab Navigation Row */}
+              <div className="tabs-row">
+                {['Overview', 'Lists', 'Board', 'Calendar', 'Task assigned to me'].map((tab) => (
+                  <button 
+                    key={tab} 
+                    className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveTab(tab);
+                      if (tab === 'Calendar') setCurrentView('calendar');
+                    }}
+                  >
+                    {tab === 'Overview' && <CheckSquare size={14} className="tab-icon" />}
+                    <span>{tab}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* 3. FOUR METRIC STAT CARDS */}
+              <div className="metrics-grid">
+                <div className="metric-card">
+                  <div className="metric-header">
+                    <div className="metric-icon-box purple">
+                      <CheckSquare size={18} color="#5D5FEF" />
+                    </div>
+                    <span className="metric-title">Value Mismatch</span>
+                    <MoreVertical size={16} className="metric-menu" />
+                  </div>
+                  <div className="metric-value-row">
+                    <span className="metric-number">
+                      {data.reasons_summary?.VALUE_MISMATCH || 0}
+                    </span>
+                    <span className="metric-trend purple">
+                      <ArrowUpRight size={13} /> 20%
+                    </span>
+                    <span className="metric-period">In the last 7 days</span>
                   </div>
                 </div>
 
-                <div className="chip">
-                  <span className="chip-flag flag-yellow">⚑</span>
-                  <div>
-                    <strong>{(data.reasons_summary?.MISSING_IN_B || 0) + (data.reasons_summary?.ORPHAN_IN_B || 0)}</strong>
-                    <span className="chip-label">Missing Entries</span>
+                <div className="metric-card">
+                  <div className="metric-header">
+                    <div className="metric-icon-box pink">
+                      <AlertTriangle size={18} color="#D946EF" />
+                    </div>
+                    <span className="metric-title">Missing / Orphan</span>
+                    <MoreVertical size={16} className="metric-menu" />
+                  </div>
+                  <div className="metric-value-row">
+                    <span className="metric-number">
+                      {(data.reasons_summary?.MISSING_IN_B || 0) + (data.reasons_summary?.ORPHAN_IN_B || 0)}
+                    </span>
+                    <span className="metric-trend pink">
+                      <ArrowUpRight size={13} /> 15%
+                    </span>
+                    <span className="metric-period">In the last 7 days</span>
                   </div>
                 </div>
 
-                <div className="chip">
-                  <span className="chip-flag flag-coral">⚑</span>
-                  <div>
-                    <strong>{(data.reasons_summary?.LOCATION_MISMATCH || 0) + (data.reasons_summary?.DATE_MISMATCH || 0)}</strong>
-                    <span className="chip-label">Metadata Diffs</span>
+                <div className="metric-card">
+                  <div className="metric-header">
+                    <div className="metric-icon-box teal">
+                      <Layers size={18} color="#00C5FF" />
+                    </div>
+                    <span className="metric-title">Duplicate / Void</span>
+                    <MoreVertical size={16} className="metric-menu" />
                   </div>
-                </div>
-              </div>
-
-              {/* Smooth Trend Wave Chart SVG */}
-              <div className="chart-container">
-                <svg viewBox="0 0 500 120" className="wave-svg">
-                  <defs>
-                    <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#5D5FEF" stopOpacity="0.25" />
-                      <stop offset="100%" stopColor="#5D5FEF" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  {/* Grid Lines */}
-                  <line x1="0" y1="30" x2="500" y2="30" stroke="#F1F3F9" strokeDasharray="3 3" />
-                  <line x1="0" y1="65" x2="500" y2="65" stroke="#F1F3F9" strokeDasharray="3 3" />
-                  <line x1="0" y1="100" x2="500" y2="100" stroke="#F1F3F9" strokeDasharray="3 3" />
-
-                  {/* Area fill */}
-                  <path 
-                    d="M 0,90 Q 60,80 120,70 T 240,45 T 360,35 T 500,20 L 500,120 L 0,120 Z" 
-                    fill="url(#purpleGrad)" 
-                  />
-                  {/* Purple Line */}
-                  <path 
-                    d="M 0,90 Q 60,80 120,70 T 240,45 T 360,35 T 500,20" 
-                    fill="none" 
-                    stroke="#5D5FEF" 
-                    strokeWidth="3" 
-                  />
-                  {/* Coral Line */}
-                  <path 
-                    d="M 0,105 Q 60,98 120,90 T 240,65 T 360,55 T 500,40" 
-                    fill="none" 
-                    stroke="#FF8F6B" 
-                    strokeWidth="2" 
-                  />
-                  {/* Dots */}
-                  <circle cx="240" cy="45" r="4" fill="#5D5FEF" stroke="#FFFFFF" strokeWidth="2" />
-                  <circle cx="360" cy="35" r="4" fill="#5D5FEF" stroke="#FFFFFF" strokeWidth="2" />
-                </svg>
-
-                {/* Months Axis */}
-                <div className="months-axis">
-                  <span>Jan</span>
-                  <span>Feb</span>
-                  <span>Mar</span>
-                  <span>Apr</span>
-                  <span>May</span>
-                  <span>Jun</span>
-                  <span>Jul</span>
-                  <span>Aug</span>
-                  <span>Sep</span>
-                  <span>Oct</span>
-                  <span>Nov</span>
-                  <span>Dec</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Status Overview Donut / Circular Progress Card */}
-            <div className="visual-card status-card">
-              <div className="visual-header">
-                <div className="title-with-icon">
-                  <CheckSquare size={16} color="#808191" />
-                  <span>Status Overview</span>
-                </div>
-                <MoreVertical size={16} className="metric-menu" />
-              </div>
-
-              <div className="status-progress-list">
-                {/* To Do: Value Discrepancies */}
-                <div className="status-item">
-                  <div className="status-label-group">
-                    <span className="status-badge-square purple" />
-                    <span className="status-name">Under Review: Value</span>
-                  </div>
-                  <div className="circular-progress purple">
-                    <span>60%</span>
+                  <div className="metric-value-row">
+                    <span className="metric-number">
+                      {(data.reasons_summary?.DUPLICATE_IN_B || 0) + (data.reasons_summary?.VOIDED_RECORD || 0)}
+                    </span>
+                    <span className="metric-trend teal">
+                      <ArrowUpRight size={13} /> 20%
+                    </span>
+                    <span className="metric-period">In the last 7 days</span>
                   </div>
                 </div>
 
-                {/* In Progress: Splits & Duplicates */}
-                <div className="status-item">
-                  <div className="status-label-group">
-                    <span className="status-badge-square violet" />
-                    <span className="status-name">Investigating: Splits</span>
+                <div className="metric-card">
+                  <div className="metric-header">
+                    <div className="metric-icon-box peach">
+                      <CalendarIcon size={18} color="#FF8F6B" />
+                    </div>
+                    <span className="metric-title">Location / Date</span>
+                    <MoreVertical size={16} className="metric-menu" />
                   </div>
-                  <div className="circular-progress violet">
-                    <span>30%</span>
-                  </div>
-                </div>
-
-                {/* Done: Verified Clean */}
-                <div className="status-item">
-                  <div className="status-label-group">
-                    <span className="status-badge-square orange" />
-                    <span className="status-name">Reconciled Clean</span>
-                  </div>
-                  <div className="circular-progress orange">
-                    <span>40%</span>
+                  <div className="metric-value-row">
+                    <span className="metric-number">
+                      {(data.reasons_summary?.LOCATION_MISMATCH || 0) + (data.reasons_summary?.DATE_MISMATCH || 0)}
+                    </span>
+                    <span className="metric-trend peach">
+                      <ArrowUpRight size={13} /> 12%
+                    </span>
+                    <span className="metric-period">In the last 7 days</span>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* 5. DISAGREEMENTS RECONCILIATION TABLE CARD */}
-          <div className="table-wrapper-card">
-            {/* Filter Pills & Controls Bar */}
-            <div className="table-controls-header">
-              <div className="filter-pills-row">
-                <button 
-                  className={`filter-pill ${reasonFilter === '' ? 'active' : ''}`}
-                  onClick={() => setReasonFilter('')}
-                >
-                  All ({data.total_disagreements})
-                </button>
-                <button 
-                  className={`filter-pill ${reasonFilter === 'VALUE_MISMATCH' ? 'active' : ''}`}
-                  onClick={() => setReasonFilter('VALUE_MISMATCH')}
-                >
-                  Value Mismatch
-                </button>
-                <button 
-                  className={`filter-pill ${reasonFilter === 'MISSING_IN_B' ? 'active' : ''}`}
-                  onClick={() => setReasonFilter('MISSING_IN_B')}
-                >
-                  Missing in B
-                </button>
-                <button 
-                  className={`filter-pill ${reasonFilter === 'ORPHAN_IN_B' ? 'active' : ''}`}
-                  onClick={() => setReasonFilter('ORPHAN_IN_B')}
-                >
-                  Orphans
-                </button>
-                <button 
-                  className={`filter-pill ${reasonFilter === 'DUPLICATE_IN_B' ? 'active' : ''}`}
-                  onClick={() => setReasonFilter('DUPLICATE_IN_B')}
-                >
-                  Duplicates
-                </button>
-                <button 
-                  className={`filter-pill ${reasonFilter === 'LOCATION_MISMATCH' ? 'active' : ''}`}
-                  onClick={() => setReasonFilter('LOCATION_MISMATCH')}
-                >
-                  Location Diff
-                </button>
-                <button 
-                  className={`filter-pill ${reasonFilter === 'DATE_MISMATCH' ? 'active' : ''}`}
-                  onClick={() => setReasonFilter('DATE_MISMATCH')}
-                >
-                  Date Diff
-                </button>
-              </div>
+              {/* 4. CHARTS & PROGRESS OVERVIEW ROW */}
+              <div className="visuals-row">
+                {/* Priority Breakdown Wave Card */}
+                <div className="visual-card breakdown-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <Flag size={16} color="#808191" />
+                      <span>Disagreement Breakdown</span>
+                    </div>
+                    <MoreVertical size={16} className="metric-menu" />
+                  </div>
 
-              <div className="items-count-badge">
-                Showing <strong>{displayedDisagreements.length}</strong> disagreements
-              </div>
-            </div>
-
-            {/* The Table */}
-            <div className="table-scroll">
-              <table className="taskbito-table">
-                <thead>
-                  <tr>
-                    <th onClick={() => handleSortToggle('reason')} className="sortable-col">
-                      <div className="th-flex">
-                        <span>Classification</span>
-                        <ArrowUpDown size={12} />
+                  <div className="breakdown-chips">
+                    <div className="chip">
+                      <span className="chip-flag flag-blue">⚑</span>
+                      <div>
+                        <strong>{data.reasons_summary?.VALUE_MISMATCH || 0}</strong>
+                        <span className="chip-label">High Discrepancy</span>
                       </div>
-                    </th>
-                    <th onClick={() => handleSortToggle('record_id')} className="sortable-col">
-                      <div className="th-flex">
-                        <span>Record Ref</span>
-                        <ArrowUpDown size={12} />
+                    </div>
+
+                    <div className="chip">
+                      <span className="chip-flag flag-yellow">⚑</span>
+                      <div>
+                        <strong>{(data.reasons_summary?.MISSING_IN_B || 0) + (data.reasons_summary?.ORPHAN_IN_B || 0)}</strong>
+                        <span className="chip-label">Missing Entries</span>
                       </div>
-                    </th>
-                    <th>System B Entry</th>
-                    <th>Location Scope</th>
-                    <th onClick={() => handleSortToggle('value')} className="sortable-col text-right">
-                      <div className="th-flex justify-end">
-                        <span>System A Total</span>
-                        <ArrowUpDown size={12} />
+                    </div>
+
+                    <div className="chip">
+                      <span className="chip-flag flag-coral">⚑</span>
+                      <div>
+                        <strong>{(data.reasons_summary?.LOCATION_MISMATCH || 0) + (data.reasons_summary?.DATE_MISMATCH || 0)}</strong>
+                        <span className="chip-label">Metadata Diffs</span>
                       </div>
-                    </th>
-                    <th className="text-right">System B Value</th>
-                    <th onClick={() => handleSortToggle('difference')} className="sortable-col text-right">
-                      <div className="th-flex justify-end">
-                        <span>Variance</span>
-                        <ArrowUpDown size={12} />
+                    </div>
+                  </div>
+
+                  <div className="chart-container">
+                    <svg viewBox="0 0 500 120" className="wave-svg">
+                      <defs>
+                        <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#5D5FEF" stopOpacity="0.25" />
+                          <stop offset="100%" stopColor="#5D5FEF" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <line x1="0" y1="30" x2="500" y2="30" stroke="#F1F3F9" strokeDasharray="3 3" />
+                      <line x1="0" y1="65" x2="500" y2="65" stroke="#F1F3F9" strokeDasharray="3 3" />
+                      <line x1="0" y1="100" x2="500" y2="100" stroke="#F1F3F9" strokeDasharray="3 3" />
+
+                      <path 
+                        d="M 0,90 Q 60,80 120,70 T 240,45 T 360,35 T 500,20 L 500,120 L 0,120 Z" 
+                        fill="url(#purpleGrad)" 
+                      />
+                      <path 
+                        d="M 0,90 Q 60,80 120,70 T 240,45 T 360,35 T 500,20" 
+                        fill="none" 
+                        stroke="#5D5FEF" 
+                        strokeWidth="3" 
+                      />
+                      <path 
+                        d="M 0,105 Q 60,98 120,90 T 240,65 T 360,55 T 500,40" 
+                        fill="none" 
+                        stroke="#FF8F6B" 
+                        strokeWidth="2" 
+                      />
+                      <circle cx="240" cy="45" r="4" fill="#5D5FEF" stroke="#FFFFFF" strokeWidth="2" />
+                      <circle cx="360" cy="35" r="4" fill="#5D5FEF" stroke="#FFFFFF" strokeWidth="2" />
+                    </svg>
+
+                    <div className="months-axis">
+                      <span>Jan</span>
+                      <span>Feb</span>
+                      <span>Mar</span>
+                      <span>Apr</span>
+                      <span>May</span>
+                      <span>Jun</span>
+                      <span>Jul</span>
+                      <span>Aug</span>
+                      <span>Sep</span>
+                      <span>Oct</span>
+                      <span>Nov</span>
+                      <span>Dec</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Status Overview Card */}
+                <div className="visual-card status-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <CheckSquare size={16} color="#808191" />
+                      <span>Status Overview</span>
+                    </div>
+                    <MoreVertical size={16} className="metric-menu" />
+                  </div>
+
+                  <div className="status-progress-list">
+                    <div className="status-item">
+                      <div className="status-label-group">
+                        <span className="status-badge-square purple" />
+                        <span className="status-name">Under Review: Value</span>
                       </div>
-                    </th>
-                    <th>Audit Explanation</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayedDisagreements.length === 0 ? (
-                    <tr>
-                      <td colSpan={8} className="empty-row">
-                        <CheckCircle2 size={36} color="#10B981" />
-                        <h4>All Records Reconciled</h4>
-                        <p>No disagreements found matching the selected filter criteria.</p>
-                      </td>
-                    </tr>
-                  ) : (
-                    displayedDisagreements.map((row, i) => {
-                      const pill = getReasonPillConfig(row.reason);
-                      const isRedacted = row.location && row.location.includes('REDACTED');
-                      const diffNum = parseFloat(row.difference || 0);
+                      <div className="circular-progress purple">
+                        <span>60%</span>
+                      </div>
+                    </div>
 
-                      return (
-                        <tr key={`${row.reason}-${row.record_id}-${i}`}>
-                          {/* Reason Pill */}
-                          <td>
-                            <span 
-                              className="reason-tag"
-                              style={{ backgroundColor: pill.bg, color: pill.text }}
-                            >
-                              <span className="reason-bullet" style={{ backgroundColor: pill.dot }} />
-                              {pill.label}
-                            </span>
-                          </td>
+                    <div className="status-item">
+                      <div className="status-label-group">
+                        <span className="status-badge-square violet" />
+                        <span className="status-name">Investigating: Splits</span>
+                      </div>
+                      <div className="circular-progress violet">
+                        <span>30%</span>
+                      </div>
+                    </div>
 
-                          {/* Record ID */}
-                          <td>
-                            {row.record_id ? (
-                              <span className="record-chip">{row.record_id}</span>
-                            ) : (
-                              <span className="null-dash">—</span>
-                            )}
-                          </td>
+                    <div className="status-item">
+                      <div className="status-label-group">
+                        <span className="status-badge-square orange" />
+                        <span className="status-name">Reconciled Clean</span>
+                      </div>
+                      <div className="circular-progress orange">
+                        <span>40%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                          {/* Entry ID */}
-                          <td>
-                            {row.entry_id ? (
-                              <span className="entry-chip">{row.entry_id}</span>
-                            ) : (
-                              <span className="null-dash">—</span>
-                            )}
-                          </td>
+              {/* 5. DISAGREEMENTS TABLE */}
+              <div className="table-wrapper-card">
+                <div className="table-controls-header">
+                  <div className="filter-pills-row">
+                    <button 
+                      className={`filter-pill ${reasonFilter === '' ? 'active' : ''}`}
+                      onClick={() => setReasonFilter('')}
+                    >
+                      All ({data.total_disagreements})
+                    </button>
+                    <button 
+                      className={`filter-pill ${reasonFilter === 'VALUE_MISMATCH' ? 'active' : ''}`}
+                      onClick={() => setReasonFilter('VALUE_MISMATCH')}
+                    >
+                      Value Mismatch
+                    </button>
+                    <button 
+                      className={`filter-pill ${reasonFilter === 'MISSING_IN_B' ? 'active' : ''}`}
+                      onClick={() => setReasonFilter('MISSING_IN_B')}
+                    >
+                      Missing in B
+                    </button>
+                    <button 
+                      className={`filter-pill ${reasonFilter === 'ORPHAN_IN_B' ? 'active' : ''}`}
+                      onClick={() => setReasonFilter('ORPHAN_IN_B')}
+                    >
+                      Orphans
+                    </button>
+                    <button 
+                      className={`filter-pill ${reasonFilter === 'DUPLICATE_IN_B' ? 'active' : ''}`}
+                      onClick={() => setReasonFilter('DUPLICATE_IN_B')}
+                    >
+                      Duplicates
+                    </button>
+                    <button 
+                      className={`filter-pill ${reasonFilter === 'LOCATION_MISMATCH' ? 'active' : ''}`}
+                      onClick={() => setReasonFilter('LOCATION_MISMATCH')}
+                    >
+                      Location Diff
+                    </button>
+                    <button 
+                      className={`filter-pill ${reasonFilter === 'DATE_MISMATCH' ? 'active' : ''}`}
+                      onClick={() => setReasonFilter('DATE_MISMATCH')}
+                    >
+                      Date Diff
+                    </button>
+                  </div>
 
-                          {/* Location */}
-                          <td>
-                            {isRedacted ? (
-                              <span className="redacted-tag" title="Cross-tenant isolation: external location masked">
-                                <Lock size={11} />
-                                <span>REDACTED</span>
-                              </span>
-                            ) : (
-                              <span className="location-text">{row.location || '—'}</span>
-                            )}
-                          </td>
+                  <div className="items-count-badge">
+                    Showing <strong>{displayedDisagreements.length}</strong> disagreements
+                  </div>
+                </div>
 
-                          {/* System A Value */}
-                          <td className="text-right mono-num font-medium">
-                            {formatCurrency(row.a_value)}
-                          </td>
-
-                          {/* System B Value */}
-                          <td className="text-right mono-num">
-                            {formatCurrency(row.b_value)}
-                          </td>
-
-                          {/* Variance */}
-                          <td className="text-right mono-num">
-                            <span className={diffNum !== 0 ? 'diff-tag' : 'clean-tag'}>
-                              {diffNum !== 0 ? formatCurrency(row.difference) : '₹0.00'}
-                            </span>
-                          </td>
-
-                          {/* Details */}
-                          <td className="details-col">
-                            {row.details}
+                <div className="table-scroll">
+                  <table className="taskbito-table">
+                    <thead>
+                      <tr>
+                        <th onClick={() => handleSortToggle('reason')} className="sortable-col">
+                          <div className="th-flex">
+                            <span>Classification</span>
+                            <ArrowUpDown size={12} />
+                          </div>
+                        </th>
+                        <th onClick={() => handleSortToggle('record_id')} className="sortable-col">
+                          <div className="th-flex">
+                            <span>Record Ref</span>
+                            <ArrowUpDown size={12} />
+                          </div>
+                        </th>
+                        <th>System B Entry</th>
+                        <th>Location Scope</th>
+                        <th onClick={() => handleSortToggle('value')} className="sortable-col text-right">
+                          <div className="th-flex justify-end">
+                            <span>System A Total</span>
+                            <ArrowUpDown size={12} />
+                          </div>
+                        </th>
+                        <th className="text-right">System B Value</th>
+                        <th onClick={() => handleSortToggle('difference')} className="sortable-col text-right">
+                          <div className="th-flex justify-end">
+                            <span>Variance</span>
+                            <ArrowUpDown size={12} />
+                          </div>
+                        </th>
+                        <th>Audit Explanation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {displayedDisagreements.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="empty-row">
+                            <CheckCircle2 size={36} color="#10B981" />
+                            <h4>All Records Reconciled</h4>
+                            <p>No disagreements found matching the selected filter criteria.</p>
                           </td>
                         </tr>
-                      );
+                      ) : (
+                        displayedDisagreements.map((row, i) => {
+                          const pill = getReasonPillConfig(row.reason);
+                          const isRedacted = row.location && row.location.includes('REDACTED');
+                          const diffNum = parseFloat(row.difference || 0);
+
+                          return (
+                            <tr key={`${row.reason}-${row.record_id}-${i}`}>
+                              <td>
+                                <span 
+                                  className="reason-tag"
+                                  style={{ backgroundColor: pill.bg, color: pill.text }}
+                                >
+                                  <span className="reason-bullet" style={{ backgroundColor: pill.dot }} />
+                                  {pill.label}
+                                </span>
+                              </td>
+
+                              <td>
+                                {row.record_id ? (
+                                  <span className="record-chip">{row.record_id}</span>
+                                ) : (
+                                  <span className="null-dash">—</span>
+                                )}
+                              </td>
+
+                              <td>
+                                {row.entry_id ? (
+                                  <span className="entry-chip">{row.entry_id}</span>
+                                ) : (
+                                  <span className="null-dash">—</span>
+                                )}
+                              </td>
+
+                              <td>
+                                {isRedacted ? (
+                                  <span className="redacted-tag" title="Cross-tenant isolation: external location masked">
+                                    <Lock size={11} />
+                                    <span>REDACTED</span>
+                                  </span>
+                                ) : (
+                                  <span className="location-text">{row.location || '—'}</span>
+                                )}
+                              </td>
+
+                              <td className="text-right mono-num font-medium">
+                                {formatCurrency(row.a_value)}
+                              </td>
+
+                              <td className="text-right mono-num">
+                                {formatCurrency(row.b_value)}
+                              </td>
+
+                              <td className="text-right mono-num">
+                                <span className={diffNum !== 0 ? 'diff-tag' : 'clean-tag'}>
+                                  {diffNum !== 0 ? formatCurrency(row.difference) : '₹0.00'}
+                                </span>
+                              </td>
+
+                              <td className="details-col">
+                                {row.details}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ========================================================
+              VIEW 2: INBOX & ALERTS
+             ======================================================== */}
+          {currentView === 'inbox' && (
+            <div className="view-container">
+              <div className="page-header-row">
+                <div>
+                  <h1 className="page-title">Reconciliation Inbox</h1>
+                  <p className="page-subtitle">
+                    Automated audit notifications, exception warnings, and system synchronization events
+                  </p>
+                </div>
+                <div className="header-buttons">
+                  <button className="btn-secondary" onClick={markAllInboxRead}>
+                    <Check size={14} />
+                    <span>Mark All Read</span>
+                  </button>
+                  <button className="btn-primary" onClick={() => setCurrentView('reconciliation')}>
+                    <CheckSquare size={14} />
+                    <span>View Disagreements</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Inbox Filter Tabs */}
+              <div className="inbox-filter-bar">
+                {['all', 'unread', 'urgent'].map((f) => (
+                  <button 
+                    key={f}
+                    className={`filter-pill ${inboxFilter === f ? 'active' : ''}`}
+                    onClick={() => setInboxFilter(f)}
+                  >
+                    {f.toUpperCase()} ({
+                      f === 'all' ? inboxItems.length :
+                      f === 'unread' ? inboxItems.filter(i => !i.read).length :
+                      inboxItems.filter(i => i.type === 'URGENT' || i.type === 'ERROR').length
                     })
-                  )}
-                </tbody>
-              </table>
+                  </button>
+                ))}
+              </div>
+
+              {/* Inbox Message List */}
+              <div className="inbox-list">
+                {inboxItems
+                  .filter(item => {
+                    if (inboxFilter === 'unread') return !item.read;
+                    if (inboxFilter === 'urgent') return item.type === 'URGENT' || item.type === 'ERROR';
+                    return true;
+                  })
+                  .map(item => (
+                    <div key={item.id} className={`inbox-card ${!item.read ? 'unread' : ''}`}>
+                      <div className="inbox-card-header">
+                        <div className="inbox-title-wrap">
+                          <span className={`inbox-tag ${item.type.toLowerCase()}`}>
+                            {item.type}
+                          </span>
+                          <h3 className="inbox-subject">{item.title}</h3>
+                        </div>
+                        <span className="inbox-time">{item.date}</span>
+                      </div>
+                      <p className="inbox-desc">{item.desc}</p>
+                    </div>
+                  ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* ========================================================
+              VIEW 3: AUDIT CALENDAR
+             ======================================================== */}
+          {currentView === 'calendar' && (
+            <div className="view-container">
+              <div className="page-header-row">
+                <div>
+                  <h1 className="page-title">Audit & Reconciliation Calendar</h1>
+                  <p className="page-subtitle">
+                    Ledger cycle dates, clearing batch submissions, and scheduled end-of-month reconciliation runs
+                  </p>
+                </div>
+                <div className="header-buttons">
+                  <div className="tenant-toggle-group">
+                    <button className="tenant-btn active">March 2026</button>
+                    <button className="tenant-btn">April 2026</button>
+                  </div>
+                  <button className="btn-primary" onClick={() => setCurrentView('reconciliation')}>
+                    <Plus size={14} />
+                    <span>Run Date Check</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="calendar-layout-grid">
+                {/* Calendar Grid */}
+                <div className="calendar-card">
+                  <div className="calendar-month-nav">
+                    <div className="calendar-month-title">
+                      <CalendarIcon size={18} color="#5D5FEF" />
+                      <h3>March 2026 (Ledger Cycle Q1)</h3>
+                    </div>
+                    <div className="cal-nav-buttons">
+                      <button className="icon-btn"><ChevronLeft size={16} /></button>
+                      <button className="icon-btn"><ChevronRight size={16} /></button>
+                    </div>
+                  </div>
+
+                  <div className="calendar-weekdays">
+                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                  </div>
+
+                  <div className="calendar-days-grid">
+                    {/* Padding days */}
+                    <div className="cal-day other-month"><span>27</span></div>
+                    <div className="cal-day other-month"><span>28</span></div>
+
+                    {/* March 1 - 31 */}
+                    {Array.from({ length: 31 }, (_, idx) => {
+                      const dayNum = idx + 1;
+                      const dayStr = dayNum < 10 ? `0${dayNum}` : `${dayNum}`;
+                      const fullDate = `2026-03-${dayStr}`;
+                      const isSelected = selectedCalendarDate === fullDate;
+
+                      // Highlight key discrepancy and reconciliation dates from dataset
+                      const hasDiscrepancy = dayNum === 26 || dayNum === 14 || dayNum === 19 || dayNum === 31;
+                      const hasBatch = dayNum === 3 || dayNum === 4 || dayNum === 11 || dayNum === 22;
+
+                      return (
+                        <div 
+                          key={dayNum} 
+                          className={`cal-day ${isSelected ? 'selected' : ''} ${hasDiscrepancy ? 'has-discrepancy' : ''}`}
+                          onClick={() => setSelectedCalendarDate(fullDate)}
+                        >
+                          <span className="day-number">{dayNum}</span>
+                          {hasDiscrepancy && (
+                            <span className="cal-event-pill red" title="Ledger Discrepancy Flagged">
+                              Diff
+                            </span>
+                          )}
+                          {hasBatch && (
+                            <span className="cal-event-pill blue" title="Batch Ingested">
+                              Batch
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Calendar Day Inspector */}
+                <div className="calendar-sidebar-card">
+                  <div className="day-inspector-header">
+                    <Clock size={16} color="#5D5FEF" />
+                    <h4>Events for {selectedCalendarDate}</h4>
+                  </div>
+                  <div className="day-events-list">
+                    <div className="day-event-item">
+                      <span className="event-dot red" />
+                      <div>
+                        <strong>REC-1014 Date Mismatch</strong>
+                        <p>System A date recorded as 26-03-2026 vs System B date 27-03-2026.</p>
+                      </div>
+                    </div>
+                    <div className="day-event-item">
+                      <span className="event-dot purple" />
+                      <div>
+                        <strong>Batch ENT/2026/4014 Ingested</strong>
+                        <p>Partner clearing ledger entry received for LOC-103 (₹55,752.45).</p>
+                      </div>
+                    </div>
+                    <div className="day-event-item">
+                      <span className="event-dot green" />
+                      <div>
+                        <strong>Tenant Isolation Verified</strong>
+                        <p>All records validated against ORG-A location access list.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              VIEW 4: AUDIT & EXPORT REPORTS
+             ======================================================== */}
+          {currentView === 'reports' && (
+            <div className="view-container">
+              <div className="page-header-row">
+                <div>
+                  <h1 className="page-title">Reconciliation Reports & Exports</h1>
+                  <p className="page-subtitle">
+                    Comprehensive compliance breakdown, variance summaries by location, and auditable exports
+                  </p>
+                </div>
+                <div className="header-buttons">
+                  <button className="btn-secondary" onClick={() => window.print()}>
+                    <Printer size={15} />
+                    <span>Print PDF</span>
+                  </button>
+                  <button className="btn-primary" onClick={() => {
+                    const csvContent = "data:text/csv;charset=utf-8," + 
+                      "Record_ID,Reason,Location,System_A,System_B,Variance\n" +
+                      data.disagreements.map(e => `${e.record_id},${e.reason},${e.location},${e.a_value},${e.b_value},${e.difference}`).join("\n");
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    link.setAttribute("download", `dealeros_${selectedOrg}_disagreements.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                  }}>
+                    <Download size={15} />
+                    <span>Export CSV</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Reports Cards Grid */}
+              <div className="reports-grid">
+                <div className="visual-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <FileSpreadsheet size={18} color="#5D5FEF" />
+                      <span>Tenant Discrepancy Breakdown</span>
+                    </div>
+                  </div>
+                  <div className="report-stats-table">
+                    <div className="report-row header">
+                      <span>Reason Category</span>
+                      <span className="text-right">Count</span>
+                      <span className="text-right">Audit Risk</span>
+                    </div>
+                    {Object.entries(data.reasons_summary || {}).map(([reason, count]) => (
+                      <div key={reason} className="report-row">
+                        <span className="font-semibold">{reason}</span>
+                        <span className="text-right font-mono">{count}</span>
+                        <span className="text-right">
+                          <span className={`risk-pill ${reason.includes('DUPLICATE') || reason.includes('VOID') ? 'high' : 'medium'}`}>
+                            {reason.includes('DUPLICATE') || reason.includes('VOID') ? 'HIGH RISK' : 'REVIEW'}
+                          </span>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="visual-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <ShieldCheck size={18} color="#10B981" />
+                      <span>Tenant Isolation Audit Statement</span>
+                    </div>
+                  </div>
+                  <div className="audit-statement">
+                    <div className="audit-badge-row">
+                      <Shield size={24} color="#10B981" />
+                      <div>
+                        <h4>Zero Cross-Tenant Leakage Enforced</h4>
+                        <p>Tenant <strong>{selectedOrg}</strong> is strictly sandboxed. All database queries are filtered by tenant location identifiers.</p>
+                      </div>
+                    </div>
+                    <ul className="audit-checklist">
+                      <li>✓ Location LOC-201 masked on trap row REC-1077</li>
+                      <li>✓ Split settlement on REC-1055 validated as clean (non-duplicate)</li>
+                      <li>✓ Blank value on ENT/2026/4050 preserved as NULL</li>
+                      <li>✓ Canonical normalization applied to dirty references (rec1034, 1112)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              VIEW 5: FINANCIAL PORTFOLIO & ANALYTICS
+             ======================================================== */}
+          {currentView === 'portfolio' && (
+            <div className="view-container">
+              <div className="page-header-row">
+                <div>
+                  <h1 className="page-title">Portfolio Exposure & Analytics</h1>
+                  <p className="page-subtitle">
+                    Ledger valuation analysis, aggregate transaction volume, and discrepancy exposure
+                  </p>
+                </div>
+                <div className="header-buttons">
+                  <button className="btn-secondary" onClick={() => setCurrentView('reports')}>
+                    <TrendingUp size={15} />
+                    <span>View Audit Trail</span>
+                  </button>
+                  <button className="btn-primary" onClick={() => setCurrentView('reconciliation')}>
+                    <CheckSquare size={15} />
+                    <span>Open Table</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Portfolio Metrics */}
+              <div className="metrics-grid">
+                <div className="metric-card">
+                  <span className="metric-title">System A Total Ledger</span>
+                  <div className="metric-value-row">
+                    <span className="metric-number">₹94,83,438.12</span>
+                    <span className="metric-trend teal">120 Records</span>
+                  </div>
+                </div>
+
+                <div className="metric-card">
+                  <span className="metric-title">System B Total Cleared</span>
+                  <div className="metric-value-row">
+                    <span className="metric-number">₹96,08,112.24</span>
+                    <span className="metric-trend purple">121 Entries</span>
+                  </div>
+                </div>
+
+                <div className="metric-card">
+                  <span className="metric-title">Reconciliation Rate</span>
+                  <div className="metric-value-row">
+                    <span className="metric-number">93.8%</span>
+                    <span className="metric-trend peach">Target: 95%</span>
+                  </div>
+                </div>
+
+                <div className="metric-card">
+                  <span className="metric-title">Net Unreconciled Variance</span>
+                  <div className="metric-value-row">
+                    <span className="metric-number font-bold text-red">₹1,24,674.12</span>
+                    <span className="metric-trend pink">Active Review</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Exposure Analysis Chart */}
+              <div className="visuals-row" style={{ marginTop: '20px' }}>
+                <div className="visual-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <PieIcon size={18} color="#5D5FEF" />
+                      <span>Discrepancy Category Distribution</span>
+                    </div>
+                  </div>
+                  <div className="portfolio-bars">
+                    <div className="bar-group">
+                      <div className="bar-info">
+                        <span>Value Discrepancy Amount</span>
+                        <strong>₹1,60,414.09</strong>
+                      </div>
+                      <div className="bar-track"><div className="bar-fill purple" style={{ width: '65%' }} /></div>
+                    </div>
+                    <div className="bar-group">
+                      <div className="bar-info">
+                        <span>Missing System B Entries</span>
+                        <strong>₹1,46,052.20</strong>
+                      </div>
+                      <div className="bar-track"><div className="bar-fill pink" style={{ width: '55%' }} /></div>
+                    </div>
+                    <div className="bar-group">
+                      <div className="bar-info">
+                        <span>Duplicate Overages</span>
+                        <strong>₹1,12,837.06</strong>
+                      </div>
+                      <div className="bar-track"><div className="bar-fill teal" style={{ width: '45%' }} /></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="visual-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <ShieldCheck size={18} color="#10B981" />
+                      <span>Ledger Health Score</span>
+                    </div>
+                  </div>
+                  <div className="health-score-wrap">
+                    <div className="health-circle">
+                      <span className="score-num">94</span>
+                      <span className="score-label">GRADE A</span>
+                    </div>
+                    <p className="health-desc">
+                      Strong ledger integrity with isolated boundary compliance. Zero cross-organization leakage detected.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              VIEW 6: SETTINGS
+             ======================================================== */}
+          {currentView === 'settings' && (
+            <div className="view-container">
+              <div className="page-header-row">
+                <div>
+                  <h1 className="page-title">System & Tenant Settings</h1>
+                  <p className="page-subtitle">
+                    Configure multi-tenant boundary rules, discrepancy thresholds, and ledger integrations
+                  </p>
+                </div>
+                <div className="header-buttons">
+                  <button className="btn-primary" onClick={() => setCurrentView('reconciliation')}>
+                    <span>Save Preferences</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="settings-grid">
+                <div className="visual-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <ShieldCheck size={18} color="#5D5FEF" />
+                      <span>Multi-Tenant Access Policy</span>
+                    </div>
+                  </div>
+                  <div className="settings-form">
+                    <div className="form-group">
+                      <label>Active Organization Tenant Context</label>
+                      <select 
+                        value={selectedOrg} 
+                        onChange={(e) => setSelectedOrg(e.target.value)}
+                        className="settings-select"
+                      >
+                        <option value="ORG-A">ORG-A (Locations: LOC-101, LOC-102, LOC-103)</option>
+                        <option value="ORG-B">ORG-B (Locations: LOC-201, LOC-202)</option>
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label>Cross-Tenant Metadata Masking</label>
+                      <input 
+                        type="text" 
+                        value="[REDACTED_CROSS_TENANT_LOCATION]" 
+                        readOnly 
+                        className="settings-input" 
+                      />
+                      <span className="form-hint">Used when an external partner records transactions under a foreign location ID.</span>
+                    </div>
+
+                    <div className="form-group">
+                      <label>Value Mismatch Tolerance Threshold</label>
+                      <input 
+                        type="text" 
+                        value="₹0.00 (Zero Tolerance - Exact Ledger Match)" 
+                        readOnly 
+                        className="settings-input" 
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="visual-card">
+                  <div className="visual-header">
+                    <div className="title-with-icon">
+                      <Database size={18} color="#00C5FF" />
+                      <span>API Endpoints & Ingestion Status</span>
+                    </div>
+                  </div>
+                  <div className="settings-endpoints">
+                    <div className="endpoint-item">
+                      <span className="endpoint-method">GET</span>
+                      <code>/api/disagreements/?org={selectedOrg}</code>
+                      <span className="endpoint-status live">Active</span>
+                    </div>
+                    <div className="endpoint-item">
+                      <span className="endpoint-method">GET</span>
+                      <code>/api/organizations/</code>
+                      <span className="endpoint-status live">Active</span>
+                    </div>
+                    <div className="endpoint-item">
+                      <span className="endpoint-method">HTML</span>
+                      <code>/reconcile/?org={selectedOrg}</code>
+                      <span className="endpoint-status live">Active</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
