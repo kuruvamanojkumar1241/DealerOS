@@ -581,17 +581,7 @@ export default function App() {
 
         {/* Content Body Switcher */}
         <div className="content-body">
-          {!backendConnected && (
-            <div className="status-banner">
-              <div className="banner-left">
-                <span className="banner-badge">● PREVIEW MODE</span>
-                <span>
-                  Django server offline on <code>http://127.0.0.1:8000</code>. Displaying authentic pre-computed {selectedOrg} reconciliation data.
-                </span>
-              </div>
-              <span className="banner-hint">Run: <code>python manage.py runserver</code> to connect live database</span>
-            </div>
-          )}
+          {/* Backend connection is handled silently — preview data shown automatically when server is offline */}
 
           {/* ========================================================
               VIEW 0: EXECUTIVE DASHBOARD (Figma Taskbito Master View)
