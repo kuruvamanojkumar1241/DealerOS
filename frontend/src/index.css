@@ -5,11 +5,11 @@
    Figma Taskbito Color Token Reference
    ============================================= */
 :root {
-  /* Sidebar — neutral slate-grey (not black, not blue) */
-  --sidebar-bg: #2C333D;
-  --sidebar-hover: rgba(255, 255, 255, 0.08);
-  --sidebar-active: #3C4452;
-  --sidebar-text: #9EA8B6;
+  /* Sidebar */
+  --sidebar-bg: linear-gradient(160deg, #0A0A0A 0%, #111111 50%, #1A1A1A 100%);
+  --sidebar-hover: rgba(255,255,255,0.08);
+  --sidebar-active: linear-gradient(135deg, #2D2D2D 0%, #3A3A3A 100%);
+  --sidebar-text: #A0A0A8;
   --sidebar-text-active: #FFFFFF;
 
   /* App Background — Clean Light Professional Theme */
@@ -89,23 +89,23 @@ body {
 }
 
 /* =============================================
-   SIDEBAR — Neutral Slate-Grey (Not Black, Not Blue)
+   SIDEBAR
    ============================================= */
 .taskbito-sidebar {
   width: 252px;
-  background: var(--sidebar-bg);
+  background: linear-gradient(160deg, #0A0A0A 0%, #111111 50%, #1A1A1A 100%);
   color: var(--sidebar-text);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   padding: 24px 14px;
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.04);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 4px 0 32px rgba(0,0,0,0.5);
   position: relative;
   overflow: hidden;
 }
 
-/* Subtle neutral highlights */
+/* Subtle glow orb behind sidebar content */
 .taskbito-sidebar::before {
   content: '';
   position: absolute;
@@ -124,7 +124,7 @@ body {
   right: -40px;
   width: 180px;
   height: 180px;
-  background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -141,12 +141,12 @@ body {
 .brand-icon-box {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #4A5464 0%, #353D4A 100%);
+  background: linear-gradient(135deg, #2A2A2A 0%, #404040 100%);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1);
   flex-shrink: 0;
 }
 
@@ -180,14 +180,15 @@ body {
 }
 
 .nav-item:hover {
-  background: var(--sidebar-hover);
+  background: rgba(255,255,255,0.09);
   color: #fff;
+  backdrop-filter: blur(4px);
 }
 
 .nav-item.active {
-  background: var(--sidebar-active);
+  background: linear-gradient(135deg, #2D2D2D 0%, #3D3D3D 100%);
   color: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
 .nav-arrow { margin-left: auto; opacity: 0.6; }
@@ -217,7 +218,7 @@ body {
   padding: 0 12px;
   font-size: 0.72rem;
   font-weight: 800;
-  color: rgba(255,255,255,0.38);
+  color: rgba(255,255,255,0.28);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 4px;
@@ -240,12 +241,12 @@ body {
   border-left: 3px solid transparent;
 }
 
-.section-item:hover { background: var(--sidebar-hover); color: #fff; }
+.section-item:hover { background: rgba(255,255,255,0.09); color: #fff; }
 
 .section-item.selected {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.08);
   color: #fff;
-  border-left-color: #A0AAB7;
+  border-left-color: rgba(255,255,255,0.4);
 }
 
 .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
@@ -257,7 +258,7 @@ body {
 .sidebar-footer {
   margin-top: auto;
   padding-top: 20px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255,255,255,0.1);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -278,7 +279,7 @@ body {
 
 .footer-item:hover, .footer-item.active {
   color: #fff;
-  background: var(--sidebar-hover);
+  background: rgba(255,255,255,0.09);
 }
 
 /* =============================================

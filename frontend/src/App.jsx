@@ -404,7 +404,7 @@ export default function App() {
 
   return (
     <div className="taskbito-layout">
-      {/* 1. LEFT SIDEBAR (Neutral Slate-Grey) */}
+      {/* 1. LEFT SIDEBAR */}
       <aside className="taskbito-sidebar">
         {/* Brand / Logo */}
         <div className="sidebar-brand" onClick={() => setCurrentView('dashboard')}>
