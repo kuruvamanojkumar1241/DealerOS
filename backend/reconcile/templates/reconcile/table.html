@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DealerOS Ledger Reconciliation – HTML Dashboard</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 24px; }
+    .header { background: white; border: 1px solid #e2e8f0; padding: 18px 24px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    h1 { margin: 0; font-size: 22px; }
+    .controls { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; }
+    select, button { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: white; }
+    table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 14px; }
+    th { background: #f8fafc; font-weight: 600; color: #475569; font-size: 12px; text-transform: uppercase; }
+    .text-right { text-align: right; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+    .badge-amber { background: #fef3c7; color: #d97706; }
+    .badge-rose { background: #ffe4e6; color: #e11d48; }
+    .badge-purple { background: #f3e8ff; color: #7e22ce; }
+    .badge-red { background: #fee2e2; color: #dc2626; }
+    .badge-blue { background: #dbeafe; color: #2563eb; }
+    .badge-cyan { background: #cffafe; color: #0891b2; }
+    .badge-slate { background: #e2e8f0; color: #475569; }
+    .tenant-banner { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 12px; border-radius: 6px; margin-bottom: 18px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>DealerOS Ledger Reconciliation</h1>
+      <p style="margin: 4px 0 0; color: #64748b; font-size: 13px;">Comparing System A (Ledger) against System B (Entries)</p>
+    </div>
+    <div>
+      <strong>Organization:</strong> {{ org_id }}
+    </div>
+  </div>
+
+  <div class="tenant-banner">
+    <strong>Tenant Isolation Active:</strong> Filtered strictly to {{ org_id }}. Cross-tenant locations are redacted for privacy.
+  </div>
+
+  <form method="get" class="controls">
+    <label><strong>Select Tenant:</strong></label>
+    <select name="org" onchange="this.form.submit()">
+      <option value="ORG-A" {% if org_id == "ORG-A" %}selected{% endif %}>ORG-A (LOC-101, LOC-102, LOC-103)</option>
+      <option value="ORG-B" {% if org_id == "ORG-B" %}selected{% endif %}>ORG-B (LOC-201, LOC-202)</option>
+    </select>
+
+    <label><strong>Filter Reason:</strong></label>
+    <select name="reason" onchange="this.form.submit()">
+      <option value="">All Disagreements</option>
+      <option value="MISSING_IN_B" {% if reason == "MISSING_IN_B" %}selected{% endif %}>MISSING_IN_B</option>
+      <option value="ORPHAN_IN_B" {% if reason == "ORPHAN_IN_B" %}selected{% endif %}>ORPHAN_IN_B</option>
+      <option value="DUPLICATE_IN_B" {% if reason == "DUPLICATE_IN_B" %}selected{% endif %}>DUPLICATE_IN_B</option>
+      <option value="VALUE_MISMATCH" {% if reason == "VALUE_MISMATCH" %}selected{% endif %}>VALUE_MISMATCH</option>
+      <option value="LOCATION_MISMATCH" {% if reason == "LOCATION_MISMATCH" %}selected{% endif %}>LOCATION_MISMATCH</option>
+      <option value="DATE_MISMATCH" {% if reason == "DATE_MISMATCH" %}selected{% endif %}>DATE_MISMATCH</option>
+      <option value="VOIDED_RECORD" {% if reason == "VOIDED_RECORD" %}selected{% endif %}>VOIDED_RECORD</option>
+    </select>
+
+    <label><strong>Sort by Value:</strong></label>
+    <select name="sort" onchange="this.form.submit()">
+      <option value="-value" {% if sort == "-value" %}selected{% endif %}>Value (High to Low)</option>
+      <option value="value" {% if sort == "value" %}selected{% endif %}>Value (Low to High)</option>
+      <option value="-difference" {% if sort == "-difference" %}selected{% endif %}>Difference (High to Low)</option>
+    </select>
+
+    <button type="submit">Filter</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Reason</th>
+        <th>Record ID</th>
+        <th>Entry ID</th>
+        <th>Location</th>
+        <th class="text-right">System A Total</th>
+        <th class="text-right">System B Value</th>
+        <th class="text-right">Difference</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in disagreements %}
+      <tr>
+        <td><span class="badge badge-{{ d.badge_color }}">{{ d.reason }}</span></td>
+        <td><code>{{ d.record_id|default:"" }}</code></td>
+        <td>{{ d.entry_id|default:"" }}</td>
+        <td><strong>{{ d.location }}</strong></td>
+        <td class="text-right">{% if d.a_value is not None %}${{ d.a_value }}{% endif %}</td>
+        <td class="text-right">{% if d.b_value is not None %}${{ d.b_value }}{% endif %}</td>
+        <td class="text-right">{% if d.difference is not None %}${{ d.difference }}{% endif %}</td>
+        <td style="color: #475569; font-size: 13px;">{{ d.details }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" style="text-align: center; padding: 32px; color: #64748b;">
+          No disagreements found for the selected criteria.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

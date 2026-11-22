@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from decimal import Decimal
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -5,6 +6,94 @@ from rest_framework.response import Response
 
 from reconcile.compare import compare_records
 from reconcile.models import Location, SystemARecord, SystemBEntry
+
+
+def html_table_view(request):
+    """
+    Renders the plain HTML table view directly from Django templates.
+    """
+    org_id = request.GET.get("org", "ORG-A").strip().upper()
+    reason_filter = request.GET.get("reason", "").strip().upper()
+    sort_param = request.GET.get("sort", "-value")
+
+    loc_org_map = dict(Location.objects.values_list("location_id", "org_id"))
+    a_qs = SystemARecord.objects.filter(location__org_id=org_id)
+    a_dict = {
+        a.record_id: {
+            "total": a.total_value,
+            "location": a.location_id,
+            "date": a.event_date,
+            "state": a.state,
+            "org": org_id,
+        }
+        for a in a_qs
+    }
+
+    b_qs = (
+        SystemBEntry.objects.filter(location__org_id=org_id)
+        | SystemBEntry.objects.filter(record_ref__in=a_dict.keys())
+    ).distinct()
+
+    b_list = [
+        {
+            "entry_id": b.entry_id,
+            "ref": b.record_ref,
+            "value": b.value,
+            "location": b.location_id,
+            "date": b.recorded_on,
+            "org": loc_org_map.get(b.location_id),
+            "label": b.label,
+        }
+        for b in b_qs
+    ]
+
+    disagreements = compare_records(a_dict, b_list, target_org=org_id, location_org_map=loc_org_map)
+
+    if reason_filter:
+        disagreements = [d for d in disagreements if d["reason"] == reason_filter]
+
+    # Badge color helper
+    badge_colors = {
+        "MISSING_IN_B": "amber",
+        "ORPHAN_IN_B": "rose",
+        "DUPLICATE_IN_B": "purple",
+        "VALUE_MISMATCH": "red",
+        "LOCATION_MISMATCH": "cyan",
+        "DATE_MISMATCH": "blue",
+        "VOIDED_RECORD": "slate",
+    }
+    for d in disagreements:
+        d["badge_color"] = badge_colors.get(d["reason"], "slate")
+
+    # Sorting
+    if sort_param:
+        reverse = sort_param.startswith("-")
+        sort_key = sort_param.lstrip("-")
+
+        def get_sort_value(item):
+            if sort_key == "value":
+                val = item.get("a_value") if item.get("a_value") is not None else item.get("b_value")
+            else:
+                val = item.get(sort_key)
+            if val is None:
+                return Decimal("-999999999999") if not reverse else Decimal("999999999999")
+            return val
+
+        try:
+            disagreements.sort(key=get_sort_value, reverse=reverse)
+        except Exception:
+            pass
+
+    return render(
+        request,
+        "reconcile/table.html",
+        {
+            "disagreements": disagreements,
+            "org_id": org_id,
+            "reason": reason_filter,
+            "sort": sort_param,
+        }
+    )
 
 
 @api_view(["GET"])
